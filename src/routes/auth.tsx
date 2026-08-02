@@ -129,7 +129,7 @@ function LoginForm() {
           password,
         });
         if (!parsed.success) {
-          toast.error(parsed.error.issues[0].message);
+          toast.error(parsed.error.issues[0]?.message);
           return;
         }
         setLoading(true);
@@ -212,7 +212,7 @@ function SignUpForm() {
           })
           .safeParse({ fullName, email, password });
         if (!parsed.success) {
-          toast.error(parsed.error.issues[0].message);
+          toast.error(parsed.error.issues[0]?.message);
           return;
         }
         setLoading(true);
@@ -293,7 +293,7 @@ function ForgotPasswordCard() {
               e.preventDefault();
               const parsed = emailSchema.safeParse(email);
               if (!parsed.success) {
-                toast.error(parsed.error.issues[0].message);
+                toast.error(parsed.error.issues[0]?.message);
                 return;
               }
               setLoading(true);
