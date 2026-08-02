@@ -14,16 +14,233 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      event_fields: {
+        Row: {
+          created_at: string
+          event_id: string
+          field_type: Database["public"]["Enums"]["field_type"]
+          id: string
+          is_required: boolean
+          label: string
+          options: Json
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          field_type?: Database["public"]["Enums"]["field_type"]
+          id?: string
+          is_required?: boolean
+          label: string
+          options?: Json
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          field_type?: Database["public"]["Enums"]["field_type"]
+          id?: string
+          is_required?: boolean
+          label?: string
+          options?: Json
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_fields_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          banner_url: string | null
+          category: string | null
+          created_at: string
+          description: string | null
+          destination_type: Database["public"]["Enums"]["destination_type"]
+          destination_url: string | null
+          event_date: string
+          event_time: string
+          event_type: Database["public"]["Enums"]["event_type"]
+          google_sheet_id: string | null
+          host_id: string
+          id: string
+          is_published: boolean
+          location: string | null
+          organizer_name: string | null
+          slug: string
+          timezone: string
+          title: string
+          updated_at: string
+          visibility: Database["public"]["Enums"]["event_visibility"]
+        }
+        Insert: {
+          banner_url?: string | null
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          destination_type?: Database["public"]["Enums"]["destination_type"]
+          destination_url?: string | null
+          event_date: string
+          event_time: string
+          event_type?: Database["public"]["Enums"]["event_type"]
+          google_sheet_id?: string | null
+          host_id: string
+          id?: string
+          is_published?: boolean
+          location?: string | null
+          organizer_name?: string | null
+          slug: string
+          timezone?: string
+          title: string
+          updated_at?: string
+          visibility?: Database["public"]["Enums"]["event_visibility"]
+        }
+        Update: {
+          banner_url?: string | null
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          destination_type?: Database["public"]["Enums"]["destination_type"]
+          destination_url?: string | null
+          event_date?: string
+          event_time?: string
+          event_type?: Database["public"]["Enums"]["event_type"]
+          google_sheet_id?: string | null
+          host_id?: string
+          id?: string
+          is_published?: boolean
+          location?: string | null
+          organizer_name?: string | null
+          slug?: string
+          timezone?: string
+          title?: string
+          updated_at?: string
+          visibility?: Database["public"]["Enums"]["event_visibility"]
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          is_suspended: boolean
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          is_suspended?: boolean
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          is_suspended?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      registrations: {
+        Row: {
+          created_at: string
+          custom_answers: Json
+          email: string
+          event_id: string
+          full_name: string
+          id: string
+          phone: string | null
+          synced_to_sheet: boolean
+        }
+        Insert: {
+          created_at?: string
+          custom_answers?: Json
+          email: string
+          event_id: string
+          full_name: string
+          id?: string
+          phone?: string | null
+          synced_to_sheet?: boolean
+        }
+        Update: {
+          created_at?: string
+          custom_answers?: Json
+          email?: string
+          event_id?: string
+          full_name?: string
+          id?: string
+          phone?: string | null
+          synced_to_sheet?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "registrations_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "host"
+      destination_type:
+        | "whatsapp"
+        | "telegram"
+        | "zoom"
+        | "google_meet"
+        | "microsoft_teams"
+        | "custom"
+      event_type: "online" | "physical"
+      event_visibility: "public" | "private" | "unlisted"
+      field_type: "short_text" | "long_text" | "dropdown" | "radio" | "checkbox"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +367,19 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "host"],
+      destination_type: [
+        "whatsapp",
+        "telegram",
+        "zoom",
+        "google_meet",
+        "microsoft_teams",
+        "custom",
+      ],
+      event_type: ["online", "physical"],
+      event_visibility: ["public", "private", "unlisted"],
+      field_type: ["short_text", "long_text", "dropdown", "radio", "checkbox"],
+    },
   },
 } as const
