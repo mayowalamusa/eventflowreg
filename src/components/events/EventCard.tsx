@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/lib/nav";
 import Badge from "../ui/Badge";
 import Button from "../ui/Button";
 import { type Event, formatPrice, formatDate } from "../../data/mockData";
