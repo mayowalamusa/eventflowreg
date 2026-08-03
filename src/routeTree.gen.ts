@@ -27,6 +27,7 @@ import { Route as DashboardSheetsRouteImport } from './routes/dashboard.sheets'
 import { Route as EventsIdRouteImport } from './routes/events.$id'
 import { Route as OrganizersIdRouteImport } from './routes/organizers.$id'
 import { Route as DashboardEventsIndexRouteImport } from './routes/dashboard.events.index'
+import { Route as DashboardEventsNewRouteImport } from './routes/dashboard.events.new'
 import { Route as EventsIdRegisterRouteImport } from './routes/events.$id.register'
 import { Route as EventsIdSuccessRouteImport } from './routes/events.$id.success'
 
@@ -120,6 +121,11 @@ const DashboardEventsIndexRoute = DashboardEventsIndexRouteImport.update({
   path: '/events/',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardEventsNewRoute = DashboardEventsNewRouteImport.update({
+  id: '/events/new',
+  path: '/events/new',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const EventsIdRegisterRoute = EventsIdRegisterRouteImport.update({
   id: '/register',
   path: '/register',
@@ -149,6 +155,7 @@ export interface FileRoutesByFullPath {
   '/organizers/$id': typeof OrganizersIdRoute
   '/admin/': typeof AdminIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/events/new': typeof DashboardEventsNewRoute
   '/events/$id/register': typeof EventsIdRegisterRoute
   '/events/$id/success': typeof EventsIdSuccessRoute
   '/dashboard/events/': typeof DashboardEventsIndexRoute
@@ -169,6 +176,7 @@ export interface FileRoutesByTo {
   '/organizers/$id': typeof OrganizersIdRoute
   '/admin': typeof AdminIndexRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/events/new': typeof DashboardEventsNewRoute
   '/events/$id/register': typeof EventsIdRegisterRoute
   '/events/$id/success': typeof EventsIdSuccessRoute
   '/dashboard/events': typeof DashboardEventsIndexRoute
@@ -192,6 +200,7 @@ export interface FileRoutesById {
   '/organizers/$id': typeof OrganizersIdRoute
   '/admin/': typeof AdminIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/events/new': typeof DashboardEventsNewRoute
   '/events/$id/register': typeof EventsIdRegisterRoute
   '/events/$id/success': typeof EventsIdSuccessRoute
   '/dashboard/events/': typeof DashboardEventsIndexRoute
@@ -216,6 +225,7 @@ export interface FileRouteTypes {
     | '/organizers/$id'
     | '/admin/'
     | '/dashboard/'
+    | '/dashboard/events/new'
     | '/events/$id/register'
     | '/events/$id/success'
     | '/dashboard/events/'
@@ -236,6 +246,7 @@ export interface FileRouteTypes {
     | '/organizers/$id'
     | '/admin'
     | '/dashboard'
+    | '/dashboard/events/new'
     | '/events/$id/register'
     | '/events/$id/success'
     | '/dashboard/events'
@@ -258,6 +269,7 @@ export interface FileRouteTypes {
     | '/organizers/$id'
     | '/admin/'
     | '/dashboard/'
+    | '/dashboard/events/new'
     | '/events/$id/register'
     | '/events/$id/success'
     | '/dashboard/events/'
@@ -403,6 +415,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardEventsIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/events/new': {
+      id: '/dashboard/events/new'
+      path: '/events/new'
+      fullPath: '/dashboard/events/new'
+      preLoaderRoute: typeof DashboardEventsNewRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/events/$id/register': {
       id: '/events/$id/register'
       path: '/register'
@@ -441,6 +460,7 @@ interface DashboardRouteChildren {
   DashboardSettingsRoute: typeof DashboardSettingsRoute
   DashboardSheetsRoute: typeof DashboardSheetsRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardEventsNewRoute: typeof DashboardEventsNewRoute
   DashboardEventsIndexRoute: typeof DashboardEventsIndexRoute
 }
 
@@ -449,6 +469,7 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardSettingsRoute: DashboardSettingsRoute,
   DashboardSheetsRoute: DashboardSheetsRoute,
   DashboardIndexRoute: DashboardIndexRoute,
+  DashboardEventsNewRoute: DashboardEventsNewRoute,
   DashboardEventsIndexRoute: DashboardEventsIndexRoute,
 }
 
