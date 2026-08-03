@@ -55,5 +55,6 @@ type LinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href"> & { to: s
 
 export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link({ to, ...rest }, ref) {
   const parsed = parsePath(to);
-  return <RouterLink ref={ref} to={parsed.to} search={parsed.search} {...(rest as never)} />;
+  const linkProps = { to: parsed.to, search: parsed.search, ...rest } as never;
+  return <RouterLink ref={ref} {...(linkProps as object)} />;
 });
