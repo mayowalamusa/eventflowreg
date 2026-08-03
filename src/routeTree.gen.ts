@@ -10,33 +10,256 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DiscoverRouteImport } from './routes/discover'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
+import { Route as AdminEventsRouteImport } from './routes/admin.events'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
+import { Route as DashboardRegistrationsRouteImport } from './routes/dashboard.registrations'
+import { Route as DashboardSettingsRouteImport } from './routes/dashboard.settings'
+import { Route as DashboardSheetsRouteImport } from './routes/dashboard.sheets'
+import { Route as EventsIdRouteImport } from './routes/events.$id'
+import { Route as OrganizersIdRouteImport } from './routes/organizers.$id'
+import { Route as DashboardEventsIndexRouteImport } from './routes/dashboard.events.index'
+import { Route as EventsIdRegisterRouteImport } from './routes/events.$id.register'
+import { Route as EventsIdSuccessRouteImport } from './routes/events.$id.success'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DiscoverRoute = DiscoverRouteImport.update({
+  id: '/discover',
+  path: '/discover',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
+  id: '/admin/analytics',
+  path: '/admin/analytics',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminEventsRoute = AdminEventsRouteImport.update({
+  id: '/admin/events',
+  path: '/admin/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/admin/users',
+  path: '/admin/users',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardIndexRoute = DashboardIndexRouteImport.update({
+  id: '/dashboard/',
+  path: '/dashboard/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRegistrationsRoute = DashboardRegistrationsRouteImport.update({
+  id: '/dashboard/registrations',
+  path: '/dashboard/registrations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
+  id: '/dashboard/settings',
+  path: '/dashboard/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardSheetsRoute = DashboardSheetsRouteImport.update({
+  id: '/dashboard/sheets',
+  path: '/dashboard/sheets',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventsIdRoute = EventsIdRouteImport.update({
+  id: '/events/$id',
+  path: '/events/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrganizersIdRoute = OrganizersIdRouteImport.update({
+  id: '/organizers/$id',
+  path: '/organizers/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardEventsIndexRoute = DashboardEventsIndexRouteImport.update({
+  id: '/dashboard/events/',
+  path: '/dashboard/events/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventsIdRegisterRoute = EventsIdRegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => EventsIdRoute,
+} as any)
+const EventsIdSuccessRoute = EventsIdSuccessRouteImport.update({
+  id: '/success',
+  path: '/success',
+  getParentRoute: () => EventsIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/discover': typeof DiscoverRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/events': typeof AdminEventsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/dashboard/registrations': typeof DashboardRegistrationsRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/sheets': typeof DashboardSheetsRoute
+  '/events/$id': typeof EventsIdRouteWithChildren
+  '/organizers/$id': typeof OrganizersIdRoute
+  '/admin/': typeof AdminIndexRoute
+  '/dashboard/': typeof DashboardIndexRoute
+  '/events/$id/register': typeof EventsIdRegisterRoute
+  '/events/$id/success': typeof EventsIdSuccessRoute
+  '/dashboard/events/': typeof DashboardEventsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/discover': typeof DiscoverRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/events': typeof AdminEventsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/dashboard/registrations': typeof DashboardRegistrationsRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/sheets': typeof DashboardSheetsRoute
+  '/events/$id': typeof EventsIdRouteWithChildren
+  '/organizers/$id': typeof OrganizersIdRoute
+  '/admin': typeof AdminIndexRoute
+  '/dashboard': typeof DashboardIndexRoute
+  '/events/$id/register': typeof EventsIdRegisterRoute
+  '/events/$id/success': typeof EventsIdSuccessRoute
+  '/dashboard/events': typeof DashboardEventsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/discover': typeof DiscoverRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/events': typeof AdminEventsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/dashboard/registrations': typeof DashboardRegistrationsRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/sheets': typeof DashboardSheetsRoute
+  '/events/$id': typeof EventsIdRouteWithChildren
+  '/organizers/$id': typeof OrganizersIdRoute
+  '/admin/': typeof AdminIndexRoute
+  '/dashboard/': typeof DashboardIndexRoute
+  '/events/$id/register': typeof EventsIdRegisterRoute
+  '/events/$id/success': typeof EventsIdSuccessRoute
+  '/dashboard/events/': typeof DashboardEventsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/discover'
+    | '/forgot-password'
+    | '/login'
+    | '/signup'
+    | '/admin/analytics'
+    | '/admin/events'
+    | '/admin/users'
+    | '/dashboard/registrations'
+    | '/dashboard/settings'
+    | '/dashboard/sheets'
+    | '/events/$id'
+    | '/organizers/$id'
+    | '/admin/'
+    | '/dashboard/'
+    | '/events/$id/register'
+    | '/events/$id/success'
+    | '/dashboard/events/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/discover'
+    | '/forgot-password'
+    | '/login'
+    | '/signup'
+    | '/admin/analytics'
+    | '/admin/events'
+    | '/admin/users'
+    | '/dashboard/registrations'
+    | '/dashboard/settings'
+    | '/dashboard/sheets'
+    | '/events/$id'
+    | '/organizers/$id'
+    | '/admin'
+    | '/dashboard'
+    | '/events/$id/register'
+    | '/events/$id/success'
+    | '/dashboard/events'
+  id:
+    | '__root__'
+    | '/'
+    | '/discover'
+    | '/forgot-password'
+    | '/login'
+    | '/signup'
+    | '/admin/analytics'
+    | '/admin/events'
+    | '/admin/users'
+    | '/dashboard/registrations'
+    | '/dashboard/settings'
+    | '/dashboard/sheets'
+    | '/events/$id'
+    | '/organizers/$id'
+    | '/admin/'
+    | '/dashboard/'
+    | '/events/$id/register'
+    | '/events/$id/success'
+    | '/dashboard/events/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DiscoverRoute: typeof DiscoverRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
+  LoginRoute: typeof LoginRoute
+  SignupRoute: typeof SignupRoute
+  AdminAnalyticsRoute: typeof AdminAnalyticsRoute
+  AdminEventsRoute: typeof AdminEventsRoute
+  AdminUsersRoute: typeof AdminUsersRoute
+  DashboardRegistrationsRoute: typeof DashboardRegistrationsRoute
+  DashboardSettingsRoute: typeof DashboardSettingsRoute
+  DashboardSheetsRoute: typeof DashboardSheetsRoute
+  EventsIdRoute: typeof EventsIdRouteWithChildren
+  OrganizersIdRoute: typeof OrganizersIdRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+  DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardEventsIndexRoute: typeof DashboardEventsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +271,159 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/discover': {
+      id: '/discover'
+      path: '/discover'
+      fullPath: '/discover'
+      preLoaderRoute: typeof DiscoverRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/analytics': {
+      id: '/admin/analytics'
+      path: '/admin/analytics'
+      fullPath: '/admin/analytics'
+      preLoaderRoute: typeof AdminAnalyticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/events': {
+      id: '/admin/events'
+      path: '/admin/events'
+      fullPath: '/admin/events'
+      preLoaderRoute: typeof AdminEventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/admin/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/': {
+      id: '/dashboard/'
+      path: '/dashboard'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof DashboardIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/registrations': {
+      id: '/dashboard/registrations'
+      path: '/dashboard/registrations'
+      fullPath: '/dashboard/registrations'
+      preLoaderRoute: typeof DashboardRegistrationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/settings': {
+      id: '/dashboard/settings'
+      path: '/dashboard/settings'
+      fullPath: '/dashboard/settings'
+      preLoaderRoute: typeof DashboardSettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/sheets': {
+      id: '/dashboard/sheets'
+      path: '/dashboard/sheets'
+      fullPath: '/dashboard/sheets'
+      preLoaderRoute: typeof DashboardSheetsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/events/$id': {
+      id: '/events/$id'
+      path: '/events/$id'
+      fullPath: '/events/$id'
+      preLoaderRoute: typeof EventsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/organizers/$id': {
+      id: '/organizers/$id'
+      path: '/organizers/$id'
+      fullPath: '/organizers/$id'
+      preLoaderRoute: typeof OrganizersIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/events/': {
+      id: '/dashboard/events/'
+      path: '/dashboard/events'
+      fullPath: '/dashboard/events/'
+      preLoaderRoute: typeof DashboardEventsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/events/$id/register': {
+      id: '/events/$id/register'
+      path: '/register'
+      fullPath: '/events/$id/register'
+      preLoaderRoute: typeof EventsIdRegisterRouteImport
+      parentRoute: typeof EventsIdRoute
+    }
+    '/events/$id/success': {
+      id: '/events/$id/success'
+      path: '/success'
+      fullPath: '/events/$id/success'
+      preLoaderRoute: typeof EventsIdSuccessRouteImport
+      parentRoute: typeof EventsIdRoute
+    }
   }
 }
 
+interface EventsIdRouteChildren {
+  EventsIdRegisterRoute: typeof EventsIdRegisterRoute
+  EventsIdSuccessRoute: typeof EventsIdSuccessRoute
+}
+
+const EventsIdRouteChildren: EventsIdRouteChildren = {
+  EventsIdRegisterRoute: EventsIdRegisterRoute,
+  EventsIdSuccessRoute: EventsIdSuccessRoute,
+}
+
+const EventsIdRouteWithChildren = EventsIdRoute._addFileChildren(
+  EventsIdRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DiscoverRoute: DiscoverRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
+  LoginRoute: LoginRoute,
+  SignupRoute: SignupRoute,
+  AdminAnalyticsRoute: AdminAnalyticsRoute,
+  AdminEventsRoute: AdminEventsRoute,
+  AdminUsersRoute: AdminUsersRoute,
+  DashboardRegistrationsRoute: DashboardRegistrationsRoute,
+  DashboardSettingsRoute: DashboardSettingsRoute,
+  DashboardSheetsRoute: DashboardSheetsRoute,
+  EventsIdRoute: EventsIdRouteWithChildren,
+  OrganizersIdRoute: OrganizersIdRoute,
+  AdminIndexRoute: AdminIndexRoute,
+  DashboardIndexRoute: DashboardIndexRoute,
+  DashboardEventsIndexRoute: DashboardEventsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

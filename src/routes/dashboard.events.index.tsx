@@ -138,7 +138,7 @@ function MyEventsPage() {
   );
 }
 
-export const Route = createFileRoute("/dashboard/events")({
+export const Route = createFileRoute("/dashboard/events/")({
   head: () => ({
     meta: [
       { title: "My events — EventFlow" },
