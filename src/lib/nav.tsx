@@ -53,8 +53,9 @@ export function useSearchParams(): [URLSearchParams] {
 
 type LinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href"> & { to: string };
 
+const AnyLink = RouterLink as unknown as (props: Record<string, unknown>) => JSX.Element;
+
 export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link({ to, ...rest }, ref) {
   const parsed = parsePath(to);
-  const linkProps = { to: parsed.to, search: parsed.search, ...rest } as never;
-  return <RouterLink ref={ref} {...(linkProps as object)} />;
+  return <AnyLink ref={ref} to={parsed.to} search={parsed.search} {...rest} />;
 });
