@@ -6,7 +6,7 @@
  * untouched and reusable, while navigation, links and params are fully typed
  * at the router level.
  */
-import { forwardRef, type AnchorHTMLAttributes } from "react";
+import { forwardRef, type AnchorHTMLAttributes, type ReactElement } from "react";
 import {
   Link as RouterLink,
   Outlet,
