@@ -1,10 +1,20 @@
 import { useState } from "react";
-import { Link, useLocation } from "@/lib/nav";
+import { Link, useLocation, useNavigate } from "@/lib/nav";
 import Button from "../ui/Button";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, isAdmin, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    setOpen(false);
+    await signOut();
+    navigate("/");
+  };
+
 
   const links = [
     { to: "/discover", label: "Discover" },
