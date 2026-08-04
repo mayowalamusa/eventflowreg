@@ -48,13 +48,25 @@ export default function Navbar() {
 
         {/* Desktop CTAs */}
         <div className="hidden md:flex items-center gap-2 shrink-0">
-          <Link to="/login">
-            <Button variant="ghost" size="sm">Log in</Button>
-          </Link>
-          <Link to="/signup">
-            <Button size="sm">Get Started</Button>
-          </Link>
+          {user ? (
+            <>
+              <Link to={isAdmin ? "/admin" : "/dashboard"}>
+                <Button variant="ghost" size="sm">Dashboard</Button>
+              </Link>
+              <Button size="sm" variant="outline" onClick={handleSignOut}>Sign out</Button>
+            </>
+          ) : (
+            <>
+              <Link to="/login">
+                <Button variant="ghost" size="sm">Log in</Button>
+              </Link>
+              <Link to="/signup">
+                <Button size="sm">Get Started</Button>
+              </Link>
+            </>
+          )}
         </div>
+
 
         {/* Mobile menu button */}
         <button
