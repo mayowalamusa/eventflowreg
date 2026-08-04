@@ -19,30 +19,39 @@ export type Database = {
           created_at: string
           event_id: string
           field_type: Database["public"]["Enums"]["field_type"]
+          form_id: string | null
+          help_text: string | null
           id: string
           is_required: boolean
           label: string
           options: Json
+          placeholder: string | null
           sort_order: number
         }
         Insert: {
           created_at?: string
           event_id: string
           field_type?: Database["public"]["Enums"]["field_type"]
+          form_id?: string | null
+          help_text?: string | null
           id?: string
           is_required?: boolean
           label: string
           options?: Json
+          placeholder?: string | null
           sort_order?: number
         }
         Update: {
           created_at?: string
           event_id?: string
           field_type?: Database["public"]["Enums"]["field_type"]
+          form_id?: string | null
+          help_text?: string | null
           id?: string
           is_required?: boolean
           label?: string
           options?: Json
+          placeholder?: string | null
           sort_order?: number
         }
         Relationships: [
@@ -53,74 +62,320 @@ export type Database = {
             referencedRelation: "events"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "event_fields_form_id_fkey"
+            columns: ["form_id"]
+            isOneToOne: false
+            referencedRelation: "registration_forms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_tickets: {
+        Row: {
+          created_at: string
+          currency: string
+          description: string | null
+          event_id: string
+          id: string
+          is_active: boolean
+          metadata: Json
+          name: string
+          price_cents: number
+          quantity_sold: number
+          quantity_total: number | null
+          sales_end_at: string | null
+          sales_start_at: string | null
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          description?: string | null
+          event_id: string
+          id?: string
+          is_active?: boolean
+          metadata?: Json
+          name: string
+          price_cents?: number
+          quantity_sold?: number
+          quantity_total?: number | null
+          sales_end_at?: string | null
+          sales_start_at?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          description?: string | null
+          event_id?: string
+          id?: string
+          is_active?: boolean
+          metadata?: Json
+          name?: string
+          price_cents?: number
+          quantity_sold?: number
+          quantity_total?: number | null
+          sales_end_at?: string | null
+          sales_start_at?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_tickets_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
         ]
       }
       events: {
         Row: {
           banner_url: string | null
+          base_price_cents: number
+          capacity: number | null
           category: string | null
+          certificates_enabled: boolean
+          checkin_enabled: boolean
           created_at: string
+          currency: string
           description: string | null
           destination_type: Database["public"]["Enums"]["destination_type"]
           destination_url: string | null
+          end_date: string | null
+          end_time: string | null
           event_date: string
           event_time: string
           event_type: Database["public"]["Enums"]["event_type"]
           google_sheet_id: string | null
           host_id: string
           id: string
+          is_paid: boolean
           is_published: boolean
           location: string | null
+          metadata: Json
           organizer_name: string | null
+          organizer_profile_id: string | null
+          parent_event_id: string | null
+          recurrence_rule: string | null
+          referrals_enabled: boolean
           slug: string
+          tags: string[]
           timezone: string
           title: string
           updated_at: string
+          view_count: number
           visibility: Database["public"]["Enums"]["event_visibility"]
         }
         Insert: {
           banner_url?: string | null
+          base_price_cents?: number
+          capacity?: number | null
           category?: string | null
+          certificates_enabled?: boolean
+          checkin_enabled?: boolean
           created_at?: string
+          currency?: string
           description?: string | null
           destination_type?: Database["public"]["Enums"]["destination_type"]
           destination_url?: string | null
+          end_date?: string | null
+          end_time?: string | null
           event_date: string
           event_time: string
           event_type?: Database["public"]["Enums"]["event_type"]
           google_sheet_id?: string | null
           host_id: string
           id?: string
+          is_paid?: boolean
           is_published?: boolean
           location?: string | null
+          metadata?: Json
           organizer_name?: string | null
+          organizer_profile_id?: string | null
+          parent_event_id?: string | null
+          recurrence_rule?: string | null
+          referrals_enabled?: boolean
           slug: string
+          tags?: string[]
           timezone?: string
           title: string
           updated_at?: string
+          view_count?: number
           visibility?: Database["public"]["Enums"]["event_visibility"]
         }
         Update: {
           banner_url?: string | null
+          base_price_cents?: number
+          capacity?: number | null
           category?: string | null
+          certificates_enabled?: boolean
+          checkin_enabled?: boolean
           created_at?: string
+          currency?: string
           description?: string | null
           destination_type?: Database["public"]["Enums"]["destination_type"]
           destination_url?: string | null
+          end_date?: string | null
+          end_time?: string | null
           event_date?: string
           event_time?: string
           event_type?: Database["public"]["Enums"]["event_type"]
           google_sheet_id?: string | null
           host_id?: string
           id?: string
+          is_paid?: boolean
           is_published?: boolean
           location?: string | null
+          metadata?: Json
           organizer_name?: string | null
+          organizer_profile_id?: string | null
+          parent_event_id?: string | null
+          recurrence_rule?: string | null
+          referrals_enabled?: boolean
           slug?: string
+          tags?: string[]
           timezone?: string
           title?: string
           updated_at?: string
+          view_count?: number
           visibility?: Database["public"]["Enums"]["event_visibility"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "events_organizer_profile_id_fkey"
+            columns: ["organizer_profile_id"]
+            isOneToOne: false
+            referencedRelation: "organizer_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "events_parent_event_id_fkey"
+            columns: ["parent_event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      google_connections: {
+        Row: {
+          access_token: string | null
+          created_at: string
+          google_account_id: string | null
+          google_email: string | null
+          id: string
+          is_active: boolean
+          last_sync_error: string | null
+          last_synced_at: string | null
+          metadata: Json
+          refresh_token: string | null
+          scopes: string[]
+          spreadsheet_id: string | null
+          spreadsheet_name: string | null
+          spreadsheet_url: string | null
+          token_expires_at: string | null
+          updated_at: string
+          user_id: string
+          worksheet_name: string
+        }
+        Insert: {
+          access_token?: string | null
+          created_at?: string
+          google_account_id?: string | null
+          google_email?: string | null
+          id?: string
+          is_active?: boolean
+          last_sync_error?: string | null
+          last_synced_at?: string | null
+          metadata?: Json
+          refresh_token?: string | null
+          scopes?: string[]
+          spreadsheet_id?: string | null
+          spreadsheet_name?: string | null
+          spreadsheet_url?: string | null
+          token_expires_at?: string | null
+          updated_at?: string
+          user_id: string
+          worksheet_name?: string
+        }
+        Update: {
+          access_token?: string | null
+          created_at?: string
+          google_account_id?: string | null
+          google_email?: string | null
+          id?: string
+          is_active?: boolean
+          last_sync_error?: string | null
+          last_synced_at?: string | null
+          metadata?: Json
+          refresh_token?: string | null
+          scopes?: string[]
+          spreadsheet_id?: string | null
+          spreadsheet_name?: string | null
+          spreadsheet_url?: string | null
+          token_expires_at?: string | null
+          updated_at?: string
+          user_id?: string
+          worksheet_name?: string
+        }
+        Relationships: []
+      }
+      organizer_profiles: {
+        Row: {
+          bio: string | null
+          brand_primary_color: string | null
+          brand_secondary_color: string | null
+          created_at: string
+          display_name: string
+          handle: string
+          id: string
+          is_published: boolean
+          is_verified: boolean
+          logo_url: string | null
+          metadata: Json
+          socials: Json
+          updated_at: string
+          user_id: string
+          website_url: string | null
+        }
+        Insert: {
+          bio?: string | null
+          brand_primary_color?: string | null
+          brand_secondary_color?: string | null
+          created_at?: string
+          display_name: string
+          handle: string
+          id?: string
+          is_published?: boolean
+          is_verified?: boolean
+          logo_url?: string | null
+          metadata?: Json
+          socials?: Json
+          updated_at?: string
+          user_id: string
+          website_url?: string | null
+        }
+        Update: {
+          bio?: string | null
+          brand_primary_color?: string | null
+          brand_secondary_color?: string | null
+          created_at?: string
+          display_name?: string
+          handle?: string
+          id?: string
+          is_published?: boolean
+          is_verified?: boolean
+          logo_url?: string | null
+          metadata?: Json
+          socials?: Json
+          updated_at?: string
+          user_id?: string
+          website_url?: string | null
         }
         Relationships: []
       }
@@ -154,36 +409,122 @@ export type Database = {
         }
         Relationships: []
       }
+      registration_forms: {
+        Row: {
+          closes_at: string | null
+          collect_phone: boolean
+          created_at: string
+          description: string | null
+          event_id: string
+          id: string
+          is_active: boolean
+          max_registrations: number | null
+          metadata: Json
+          name: string
+          opens_at: string | null
+          success_message: string | null
+          updated_at: string
+        }
+        Insert: {
+          closes_at?: string | null
+          collect_phone?: boolean
+          created_at?: string
+          description?: string | null
+          event_id: string
+          id?: string
+          is_active?: boolean
+          max_registrations?: number | null
+          metadata?: Json
+          name?: string
+          opens_at?: string | null
+          success_message?: string | null
+          updated_at?: string
+        }
+        Update: {
+          closes_at?: string | null
+          collect_phone?: boolean
+          created_at?: string
+          description?: string | null
+          event_id?: string
+          id?: string
+          is_active?: boolean
+          max_registrations?: number | null
+          metadata?: Json
+          name?: string
+          opens_at?: string | null
+          success_message?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "registration_forms_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       registrations: {
         Row: {
+          amount_paid_cents: number
+          certificate_issued_at: string | null
+          checked_in_at: string | null
           created_at: string
           custom_answers: Json
           email: string
           event_id: string
+          form_id: string | null
           full_name: string
           id: string
+          metadata: Json
           phone: string | null
+          referral_code: string | null
+          referred_by: string | null
+          status: string
           synced_to_sheet: boolean
+          ticket_code: string | null
+          ticket_id: string | null
         }
         Insert: {
+          amount_paid_cents?: number
+          certificate_issued_at?: string | null
+          checked_in_at?: string | null
           created_at?: string
           custom_answers?: Json
           email: string
           event_id: string
+          form_id?: string | null
           full_name: string
           id?: string
+          metadata?: Json
           phone?: string | null
+          referral_code?: string | null
+          referred_by?: string | null
+          status?: string
           synced_to_sheet?: boolean
+          ticket_code?: string | null
+          ticket_id?: string | null
         }
         Update: {
+          amount_paid_cents?: number
+          certificate_issued_at?: string | null
+          checked_in_at?: string | null
           created_at?: string
           custom_answers?: Json
           email?: string
           event_id?: string
+          form_id?: string | null
           full_name?: string
           id?: string
+          metadata?: Json
           phone?: string | null
+          referral_code?: string | null
+          referred_by?: string | null
+          status?: string
           synced_to_sheet?: boolean
+          ticket_code?: string | null
+          ticket_id?: string | null
         }
         Relationships: [
           {
@@ -191,6 +532,27 @@ export type Database = {
             columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "registrations_form_id_fkey"
+            columns: ["form_id"]
+            isOneToOne: false
+            referencedRelation: "registration_forms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "registrations_referred_by_fkey"
+            columns: ["referred_by"]
+            isOneToOne: false
+            referencedRelation: "registrations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "registrations_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "event_tickets"
             referencedColumns: ["id"]
           },
         ]
