@@ -3,17 +3,28 @@ import { useState } from "react";
 import { Link } from "@/lib/nav";
 import { Input } from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => { setLoading(false); setSent(true); }, 1000);
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    setLoading(false);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    setSent(true);
   };
+
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center px-4">
