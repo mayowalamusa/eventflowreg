@@ -138,6 +138,8 @@ export default function DashboardLayout() {
               Admin Panel
             </Link>
           </div>
+          )}
+
         </nav>
 
         {/* User area */}
