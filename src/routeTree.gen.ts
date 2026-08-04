@@ -15,7 +15,9 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as VerifyEmailRouteImport } from './routes/verify-email'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as AdminEventsRouteImport } from './routes/admin.events'
@@ -62,9 +64,19 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VerifyEmailRoute = VerifyEmailRouteImport.update({
+  id: '/verify-email',
+  path: '/verify-email',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
@@ -150,7 +162,9 @@ export interface FileRoutesByFullPath {
   '/discover': typeof DiscoverRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/events': typeof AdminEventsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -172,7 +186,9 @@ export interface FileRoutesByTo {
   '/discover': typeof DiscoverRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/events': typeof AdminEventsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -197,7 +213,9 @@ export interface FileRoutesById {
   '/discover': typeof DiscoverRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/events': typeof AdminEventsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -223,7 +241,9 @@ export interface FileRouteTypes {
     | '/discover'
     | '/forgot-password'
     | '/login'
+    | '/reset-password'
     | '/signup'
+    | '/verify-email'
     | '/admin/analytics'
     | '/admin/events'
     | '/admin/users'
@@ -245,7 +265,9 @@ export interface FileRouteTypes {
     | '/discover'
     | '/forgot-password'
     | '/login'
+    | '/reset-password'
     | '/signup'
+    | '/verify-email'
     | '/admin/analytics'
     | '/admin/events'
     | '/admin/users'
@@ -269,7 +291,9 @@ export interface FileRouteTypes {
     | '/discover'
     | '/forgot-password'
     | '/login'
+    | '/reset-password'
     | '/signup'
+    | '/verify-email'
     | '/admin/analytics'
     | '/admin/events'
     | '/admin/users'
@@ -294,7 +318,9 @@ export interface RootRouteChildren {
   DiscoverRoute: typeof DiscoverRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   SignupRoute: typeof SignupRoute
+  VerifyEmailRoute: typeof VerifyEmailRoute
   EventsIdRoute: typeof EventsIdRouteWithChildren
   OrganizersIdRoute: typeof OrganizersIdRoute
 }
@@ -343,11 +369,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/signup': {
       id: '/signup'
       path: '/signup'
       fullPath: '/signup'
       preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verify-email': {
+      id: '/verify-email'
+      path: '/verify-email'
+      fullPath: '/verify-email'
+      preLoaderRoute: typeof VerifyEmailRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -519,7 +559,9 @@ const rootRouteChildren: RootRouteChildren = {
   DiscoverRoute: DiscoverRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   SignupRoute: SignupRoute,
+  VerifyEmailRoute: VerifyEmailRoute,
   EventsIdRoute: EventsIdRouteWithChildren,
   OrganizersIdRoute: OrganizersIdRoute,
 }
