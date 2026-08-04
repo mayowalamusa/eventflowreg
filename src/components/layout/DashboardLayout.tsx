@@ -118,7 +118,9 @@ export default function DashboardLayout() {
             </Link>
           ))}
 
+          {isAdmin && (
           <div className="mt-4 pt-4 border-t border-[#E2E8F0]">
+
             <p className="px-3 text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-2">Admin</p>
             <Link
               to="/admin"
@@ -141,17 +143,29 @@ export default function DashboardLayout() {
         {/* User area */}
         <div className="p-4 border-t border-[#E2E8F0] shrink-0">
           <div className="flex items-center gap-3">
-            <img
-              src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=64&h=64&fit=crop&auto=format"
-              alt="Amara Okafor"
-              className="size-8 rounded-full object-cover"
-            />
+            {avatarUrl ? (
+              <img src={avatarUrl} alt={displayName} className="size-8 rounded-full object-cover" />
+            ) : (
+              <div className="size-8 rounded-full bg-[#EEF2FF] text-[#4F46E5] text-xs font-bold flex items-center justify-center shrink-0">
+                {displayName.slice(0, 2).toUpperCase()}
+              </div>
+            )}
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-[#0F172A] truncate">Amara Okafor</p>
-              <p className="text-xs text-[#94A3B8] truncate">amara@gmail.com</p>
+              <p className="text-sm font-medium text-[#0F172A] truncate">{displayName}</p>
+              <p className="text-xs text-[#94A3B8] truncate">{user?.email}</p>
             </div>
+            <button
+              onClick={handleSignOut}
+              aria-label="Sign out"
+              className="p-1.5 rounded-[8px] text-[#94A3B8] hover:bg-[#F8FAFC] hover:text-[#0F172A]"
+            >
+              <svg className="size-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 8H5a2 2 0 01-2-2V6a2 2 0 012-2h8" />
+              </svg>
+            </button>
           </div>
         </div>
+
       </aside>
 
       {/* Main */}
