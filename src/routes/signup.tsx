@@ -3,6 +3,8 @@ import { useState } from "react";
 import { Link, useNavigate } from "@/lib/nav";
 import { Input } from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 type Role = "attendee" | "host";
 
@@ -13,11 +15,25 @@ function SignUpPage() {
   const [role, setRole] = useState<Role>("attendee");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (step === 1) { setStep(2); return; }
     setLoading(true);
-    setTimeout(() => { navigate("/dashboard"); }, 1000);
+    const email = form.email.trim();
+    const { error } = await supabase.auth.signUp({
+      email,
+      password: form.password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/dashboard`,
+        data: { full_name: form.name.trim(), signup_intent: role },
+      },
+    });
+    setLoading(false);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    navigate(`/verify-email?email=${encodeURIComponent(email)}`);
   };
 
   return (
@@ -82,6 +98,7 @@ function SignUpPage() {
                 label="Password"
                 type="password"
                 required
+                minLength={8}
                 value={form.password}
                 onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
                 placeholder="At least 8 characters"

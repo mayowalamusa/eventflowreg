@@ -1,10 +1,20 @@
 import { useState } from "react";
-import { Link, useLocation } from "@/lib/nav";
+import { Link, useLocation, useNavigate } from "@/lib/nav";
 import Button from "../ui/Button";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, isAdmin, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    setOpen(false);
+    await signOut();
+    navigate("/");
+  };
+
 
   const links = [
     { to: "/discover", label: "Discover" },
@@ -48,13 +58,25 @@ export default function Navbar() {
 
         {/* Desktop CTAs */}
         <div className="hidden md:flex items-center gap-2 shrink-0">
-          <Link to="/login">
-            <Button variant="ghost" size="sm">Log in</Button>
-          </Link>
-          <Link to="/signup">
-            <Button size="sm">Get Started</Button>
-          </Link>
+          {user ? (
+            <>
+              <Link to={isAdmin ? "/admin" : "/dashboard"}>
+                <Button variant="ghost" size="sm">Dashboard</Button>
+              </Link>
+              <Button size="sm" variant="outline" onClick={handleSignOut}>Sign out</Button>
+            </>
+          ) : (
+            <>
+              <Link to="/login">
+                <Button variant="ghost" size="sm">Log in</Button>
+              </Link>
+              <Link to="/signup">
+                <Button size="sm">Get Started</Button>
+              </Link>
+            </>
+          )}
         </div>
+
 
         {/* Mobile menu button */}
         <button
@@ -88,13 +110,27 @@ export default function Navbar() {
             </Link>
           ))}
           <div className="flex gap-2 mt-2 pt-3 border-t border-[#E2E8F0]">
-            <Link to="/login" className="flex-1">
-              <Button variant="outline" fullWidth size="sm">Log in</Button>
-            </Link>
-            <Link to="/signup" className="flex-1">
-              <Button fullWidth size="sm">Get Started</Button>
-            </Link>
+            {user ? (
+              <>
+                <Link to={isAdmin ? "/admin" : "/dashboard"} className="flex-1" onClick={() => setOpen(false)}>
+                  <Button variant="outline" fullWidth size="sm">Dashboard</Button>
+                </Link>
+                <div className="flex-1">
+                  <Button fullWidth size="sm" onClick={handleSignOut}>Sign out</Button>
+                </div>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className="flex-1">
+                  <Button variant="outline" fullWidth size="sm">Log in</Button>
+                </Link>
+                <Link to="/signup" className="flex-1">
+                  <Button fullWidth size="sm">Get Started</Button>
+                </Link>
+              </>
+            )}
           </div>
+
         </div>
       )}
     </nav>
