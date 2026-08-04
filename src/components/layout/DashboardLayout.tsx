@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { Link, useLocation, Outlet } from "@/lib/nav";
+import { Link, useLocation, useNavigate, Outlet } from "@/lib/nav";
+import { useAuth } from "@/hooks/useAuth";
+
 
 const navItems = [
   {
@@ -59,7 +61,21 @@ const navItems = [
 
 export default function DashboardLayout() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, isAdmin, signOut } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const displayName =
+    (user?.user_metadata?.["full_name"] as string | undefined) ??
+    user?.email?.split("@")[0] ??
+    "Host";
+  const avatarUrl = user?.user_metadata?.["avatar_url"] as string | undefined;
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/login");
+  };
+
 
   const isActive = (to: string) => {
     if (to === "/dashboard") return location.pathname === "/dashboard";
