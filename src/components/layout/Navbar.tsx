@@ -110,13 +110,27 @@ export default function Navbar() {
             </Link>
           ))}
           <div className="flex gap-2 mt-2 pt-3 border-t border-[#E2E8F0]">
-            <Link to="/login" className="flex-1">
-              <Button variant="outline" fullWidth size="sm">Log in</Button>
-            </Link>
-            <Link to="/signup" className="flex-1">
-              <Button fullWidth size="sm">Get Started</Button>
-            </Link>
+            {user ? (
+              <>
+                <Link to={isAdmin ? "/admin" : "/dashboard"} className="flex-1" onClick={() => setOpen(false)}>
+                  <Button variant="outline" fullWidth size="sm">Dashboard</Button>
+                </Link>
+                <div className="flex-1">
+                  <Button fullWidth size="sm" onClick={handleSignOut}>Sign out</Button>
+                </div>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className="flex-1">
+                  <Button variant="outline" fullWidth size="sm">Log in</Button>
+                </Link>
+                <Link to="/signup" className="flex-1">
+                  <Button fullWidth size="sm">Get Started</Button>
+                </Link>
+              </>
+            )}
           </div>
+
         </div>
       )}
     </nav>
