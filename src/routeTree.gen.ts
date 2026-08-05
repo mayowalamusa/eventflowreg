@@ -23,6 +23,7 @@ import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as AdminEventsRouteImport } from './routes/admin.events'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
+import { Route as DashboardOrganizerRouteImport } from './routes/dashboard.organizer'
 import { Route as DashboardRegistrationsRouteImport } from './routes/dashboard.registrations'
 import { Route as DashboardSettingsRouteImport } from './routes/dashboard.settings'
 import { Route as DashboardSheetsRouteImport } from './routes/dashboard.sheets'
@@ -104,6 +105,11 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
   path: '/',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardOrganizerRoute = DashboardOrganizerRouteImport.update({
+  id: '/organizer',
+  path: '/organizer',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardRegistrationsRoute = DashboardRegistrationsRouteImport.update({
   id: '/registrations',
   path: '/registrations',
@@ -168,6 +174,7 @@ export interface FileRoutesByFullPath {
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/events': typeof AdminEventsRoute
   '/admin/users': typeof AdminUsersRoute
+  '/dashboard/organizer': typeof DashboardOrganizerRoute
   '/dashboard/registrations': typeof DashboardRegistrationsRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/sheets': typeof DashboardSheetsRoute
@@ -192,6 +199,7 @@ export interface FileRoutesByTo {
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/events': typeof AdminEventsRoute
   '/admin/users': typeof AdminUsersRoute
+  '/dashboard/organizer': typeof DashboardOrganizerRoute
   '/dashboard/registrations': typeof DashboardRegistrationsRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/sheets': typeof DashboardSheetsRoute
@@ -219,6 +227,7 @@ export interface FileRoutesById {
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/events': typeof AdminEventsRoute
   '/admin/users': typeof AdminUsersRoute
+  '/dashboard/organizer': typeof DashboardOrganizerRoute
   '/dashboard/registrations': typeof DashboardRegistrationsRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/sheets': typeof DashboardSheetsRoute
@@ -247,6 +256,7 @@ export interface FileRouteTypes {
     | '/admin/analytics'
     | '/admin/events'
     | '/admin/users'
+    | '/dashboard/organizer'
     | '/dashboard/registrations'
     | '/dashboard/settings'
     | '/dashboard/sheets'
@@ -271,6 +281,7 @@ export interface FileRouteTypes {
     | '/admin/analytics'
     | '/admin/events'
     | '/admin/users'
+    | '/dashboard/organizer'
     | '/dashboard/registrations'
     | '/dashboard/settings'
     | '/dashboard/sheets'
@@ -297,6 +308,7 @@ export interface FileRouteTypes {
     | '/admin/analytics'
     | '/admin/events'
     | '/admin/users'
+    | '/dashboard/organizer'
     | '/dashboard/registrations'
     | '/dashboard/settings'
     | '/dashboard/sheets'
@@ -425,6 +437,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/organizer': {
+      id: '/dashboard/organizer'
+      path: '/organizer'
+      fullPath: '/dashboard/organizer'
+      preLoaderRoute: typeof DashboardOrganizerRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/registrations': {
       id: '/dashboard/registrations'
       path: '/registrations'
@@ -515,6 +534,7 @@ const AdminRouteChildren: AdminRouteChildren = {
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface DashboardRouteChildren {
+  DashboardOrganizerRoute: typeof DashboardOrganizerRoute
   DashboardRegistrationsRoute: typeof DashboardRegistrationsRoute
   DashboardSettingsRoute: typeof DashboardSettingsRoute
   DashboardSheetsRoute: typeof DashboardSheetsRoute
@@ -525,6 +545,7 @@ interface DashboardRouteChildren {
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardOrganizerRoute: DashboardOrganizerRoute,
   DashboardRegistrationsRoute: DashboardRegistrationsRoute,
   DashboardSettingsRoute: DashboardSettingsRoute,
   DashboardSheetsRoute: DashboardSheetsRoute,
