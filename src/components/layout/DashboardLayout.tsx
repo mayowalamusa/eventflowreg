@@ -48,6 +48,15 @@ const navItems = [
     ),
   },
   {
+    to: "/dashboard/organizer",
+    label: "Organizer Profile",
+    icon: (
+      <svg className="size-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-4h6v4" />
+      </svg>
+    ),
+  },
+  {
     to: "/dashboard/settings",
     label: "Settings",
     icon: (
