@@ -325,11 +325,43 @@ export type Database = {
         }
         Relationships: []
       }
+      organizer_followers: {
+        Row: {
+          created_at: string
+          id: string
+          organizer_profile_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          organizer_profile_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          organizer_profile_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organizer_followers_organizer_profile_id_fkey"
+            columns: ["organizer_profile_id"]
+            isOneToOne: false
+            referencedRelation: "organizer_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organizer_profiles: {
         Row: {
           bio: string | null
           brand_primary_color: string | null
           brand_secondary_color: string | null
+          city: string | null
+          contact_email: string | null
+          country: string | null
           created_at: string
           display_name: string
           handle: string
@@ -338,7 +370,9 @@ export type Database = {
           is_verified: boolean
           logo_url: string | null
           metadata: Json
+          phone: string | null
           socials: Json
+          state: string | null
           updated_at: string
           user_id: string
           website_url: string | null
@@ -347,6 +381,9 @@ export type Database = {
           bio?: string | null
           brand_primary_color?: string | null
           brand_secondary_color?: string | null
+          city?: string | null
+          contact_email?: string | null
+          country?: string | null
           created_at?: string
           display_name: string
           handle: string
@@ -355,7 +392,9 @@ export type Database = {
           is_verified?: boolean
           logo_url?: string | null
           metadata?: Json
+          phone?: string | null
           socials?: Json
+          state?: string | null
           updated_at?: string
           user_id: string
           website_url?: string | null
@@ -364,6 +403,9 @@ export type Database = {
           bio?: string | null
           brand_primary_color?: string | null
           brand_secondary_color?: string | null
+          city?: string | null
+          contact_email?: string | null
+          country?: string | null
           created_at?: string
           display_name?: string
           handle?: string
@@ -372,7 +414,9 @@ export type Database = {
           is_verified?: boolean
           logo_url?: string | null
           metadata?: Json
+          phone?: string | null
           socials?: Json
+          state?: string | null
           updated_at?: string
           user_id?: string
           website_url?: string | null
