@@ -142,3 +142,17 @@ export const DESTINATION_LABELS: Record<string, string> = {
 export function destinationLabel(type: string | null | undefined): string {
   return DESTINATION_LABELS[type ?? "custom"] ?? DESTINATION_LABELS["custom"]!;
 }
+
+/** Active registration form for an event (used to link registrations to the form). */
+export async function fetchRegistrationForm(eventId: string) {
+  const { data, error } = await supabase
+    .from("registration_forms")
+    .select("*")
+    .eq("event_id", eventId)
+    .eq("is_active", true)
+    .order("created_at", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+  if (error) throw error;
+  return data;
+}
