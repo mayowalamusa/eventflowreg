@@ -171,7 +171,10 @@ function DiscoveryPage() {
               </p>
             </div>
 
-            {filtered.length === 0 ? (
+            {isLoading ? (
+              <div className="text-center py-24 text-sm text-[#64748B]">Loading events…</div>
+            ) : filtered.length === 0 ? (
+
               <div className="text-center py-24">
                 <div className="text-5xl mb-4">🔍</div>
                 <h3 className="text-lg font-semibold text-[#0F172A] mb-2">No events found</h3>
