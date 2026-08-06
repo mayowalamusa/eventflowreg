@@ -247,11 +247,21 @@ function HomePage() {
               Browse all events
             </Button>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {featuredEvents.map((event) => (
-              <EventCard key={event.id} event={event} />
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="text-center py-16 text-sm text-[#64748B]">Loading events…</div>
+          ) : featuredEvents.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="text-4xl mb-3">📅</div>
+              <p className="text-sm text-[#64748B]">No public events yet — be the first to publish one.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              {featuredEvents.map((event) => (
+                <EventCard key={event.id} event={event} />
+              ))}
+            </div>
+          )}
+
         </div>
       </section>
 
