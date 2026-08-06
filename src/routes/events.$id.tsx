@@ -1,20 +1,38 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useParams, useNavigate } from "@/lib/nav";
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
 import EventCard from "@/components/events/EventCard";
-import { events, formatPrice, formatDate } from "@/data/mockData";
+import {
+  bannerOrFallback,
+  eventPrice,
+  eventStartsAt,
+  fetchPublicEvent,
+  fetchPublicEvents,
+  isFree,
+} from "@/lib/publicEvents";
 
-function useCountdown(targetDate: string) {
+function formatDate(date: string) {
+  return new Date(`${date}T00:00:00`).toLocaleDateString(undefined, {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+function useCountdown(target: Date | null) {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const ts = target ? target.getTime() : 0;
   useEffect(() => {
-    const target = new Date(targetDate).getTime();
+    if (!ts) return;
     const update = () => {
-      const diff = target - Date.now();
-      if (diff <= 0) return;
+      const diff = ts - Date.now();
+      if (diff <= 0) return setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
       setTimeLeft({
         days: Math.floor(diff / 86400000),
         hours: Math.floor((diff % 86400000) / 3600000),
@@ -25,17 +43,57 @@ function useCountdown(targetDate: string) {
     update();
     const id = setInterval(update, 1000);
     return () => clearInterval(id);
-  }, [targetDate]);
+  }, [ts]);
   return timeLeft;
 }
 
 function EventDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const event = events.find((e) => e.id === id) ?? events[0];
-  const countdown = useCountdown(event.date);
-  const pct = Math.round((event.attendees / event.capacity) * 100);
-  const similar = events.filter((e) => e.id !== event.id && e.category === event.category).slice(0, 3);
+
+  const { data: event, isLoading } = useQuery({
+    queryKey: ["public-event", id],
+    queryFn: () => fetchPublicEvent(id!),
+    enabled: Boolean(id),
+  });
+
+  const { data: allEvents = [] } = useQuery({
+    queryKey: ["public-events"],
+    queryFn: () => fetchPublicEvents(60),
+  });
+
+  const countdown = useCountdown(event ? eventStartsAt(event) : null);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#F8FAFC] flex flex-col">
+        <Navbar />
+        <div className="flex-1 flex items-center justify-center text-sm text-[#64748B]">Loading event…</div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (!event) {
+    return (
+      <div className="min-h-screen bg-[#F8FAFC] flex flex-col">
+        <Navbar />
+        <div className="flex-1 flex flex-col items-center justify-center gap-3 py-24">
+          <div className="text-5xl">🔍</div>
+          <h1 className="text-xl font-bold text-[#0F172A]">Event not found</h1>
+          <p className="text-sm text-[#64748B]">This event may have been unpublished or removed.</p>
+          <Button onClick={() => navigate("/discover")}>Browse events</Button>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  const capacity = event.capacity ?? 0;
+  const pct = capacity > 0 ? Math.min(100, Math.round((0 / capacity) * 100)) : 0;
+  const similar = allEvents
+    .filter((e) => e.id !== event.id && (e.category || "Other") === (event.category || "Other"))
+    .slice(0, 3);
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col">
@@ -43,21 +101,20 @@ function EventDetailPage() {
 
       {/* Banner */}
       <div className="relative h-72 sm:h-96 overflow-hidden bg-[#EEF2FF]">
-        <img src={event.banner} alt={event.title} className="w-full h-full object-cover" />
+        <img src={bannerOrFallback(event)} alt={event.title} className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 max-w-7xl mx-auto px-4 sm:px-6 pb-8">
           <div className="flex gap-2 mb-3 flex-wrap">
-            <Badge variant="primary">{event.category}</Badge>
-            <Badge variant={event.locationType === "online" ? "primary" : "default"}>
-              {event.locationType === "online" ? "Online" : "In-Person"}
+            <Badge variant="primary">{event.category || "Other"}</Badge>
+            <Badge variant={event.event_type === "online" ? "primary" : "default"}>
+              {event.event_type === "online" ? "Online" : "In-Person"}
             </Badge>
-            <Badge variant={event.price === 0 ? "success" : "warning"}>
-              {formatPrice(event.price)}
-            </Badge>
+            <Badge variant={isFree(event) ? "success" : "warning"}>{eventPrice(event)}</Badge>
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold text-white leading-tight">{event.title}</h1>
         </div>
       </div>
+
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 w-full">
         <div className="grid lg:grid-cols-3 gap-8">
