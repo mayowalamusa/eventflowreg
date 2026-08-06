@@ -1,15 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useParams, useNavigate } from "@/lib/nav";
+import { useParams, useNavigate, useSearchParams } from "@/lib/nav";
 import { useQuery } from "@tanstack/react-query";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Button from "@/components/ui/Button";
 import EventCard from "@/components/events/EventCard";
 import { bannerOrFallback, fetchPublicEvent, fetchPublicEvents } from "@/lib/publicEvents";
+import { destinationLabel, safeDestinationUrl } from "@/lib/registration";
 
 function RegistrationSuccessPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const registrationId = searchParams.get("rid");
+
 
   const { data: event, isLoading } = useQuery({
     queryKey: ["public-event", id],
