@@ -171,8 +171,9 @@ function EventDetailPage() {
           <div className="lg:col-span-1">
             <div className="bg-white rounded-[16px] border border-[#E2E8F0] shadow-lg p-6 lg:sticky lg:top-24">
               <div className="text-center mb-5">
-                <p className="text-3xl font-bold text-[#4F46E5]">{formatPrice(event.price)}</p>
-                {event.price > 0 && <p className="text-xs text-[#94A3B8] mt-0.5">per attendee</p>}
+                <p className="text-3xl font-bold text-[#4F46E5]">{eventPrice(event)}</p>
+                {!isFree(event) && <p className="text-xs text-[#94A3B8] mt-0.5">per attendee</p>}
+
               </div>
 
               {/* Countdown */}
