@@ -1,16 +1,39 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useParams, useNavigate } from "@/lib/nav";
+import { useQuery } from "@tanstack/react-query";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Button from "@/components/ui/Button";
 import EventCard from "@/components/events/EventCard";
-import { events, formatDate } from "@/data/mockData";
+import { bannerOrFallback, fetchPublicEvent, fetchPublicEvents } from "@/lib/publicEvents";
 
 function RegistrationSuccessPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const event = events.find((e) => e.id === id) ?? events[0];
-  const recommended = events.filter((e) => e.id !== event.id).slice(0, 3);
+
+  const { data: event, isLoading } = useQuery({
+    queryKey: ["public-event", id],
+    queryFn: () => fetchPublicEvent(id!),
+    enabled: Boolean(id),
+  });
+  const { data: allEvents = [] } = useQuery({
+    queryKey: ["public-events"],
+    queryFn: () => fetchPublicEvents(20),
+  });
+
+  const recommended = allEvents.filter((e) => e.id !== event?.id).slice(0, 3);
+
+  if (isLoading || !event) {
+    return (
+      <div className="min-h-screen bg-[#F8FAFC] flex flex-col">
+        <Navbar />
+        <div className="flex-1 flex items-center justify-center text-sm text-[#64748B]">
+          {isLoading ? "Loading…" : "Registration confirmed."}
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col">
@@ -30,13 +53,26 @@ function RegistrationSuccessPage() {
 
           {/* Event summary card */}
           <div className="bg-white rounded-[16px] border border-[#E2E8F0] overflow-hidden mb-8 text-left">
-            <img src={event.banner} alt={event.title} className="w-full h-36 object-cover" />
+            <img src={bannerOrFallback(event)} alt={event.title} className="w-full h-36 object-cover" />
             <div className="p-5 flex flex-col gap-2">
               <p className="font-semibold text-[#0F172A]">{event.title}</p>
-              <p className="text-sm text-[#64748B]">📅 {formatDate(event.date)} · {event.time}</p>
-              <p className="text-sm text-[#64748B]">📍 {event.location}</p>
+              <p className="text-sm text-[#64748B]">
+                📅 {new Date(`${event.event_date}T00:00:00`).toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" })} · {(event.event_time || "").slice(0, 5)}
+              </p>
+              <p className="text-sm text-[#64748B]">
+                📍 {event.event_type === "online" ? "Online event" : event.location || "To be announced"}
+              </p>
             </div>
           </div>
+
+          {event.destination_url && (
+            <div className="mb-6">
+              <Button fullWidth size="lg" onClick={() => window.open(event.destination_url!, "_blank", "noopener")}>
+                Join the event
+              </Button>
+            </div>
+          )}
+
 
           {/* Community join buttons */}
           <p className="text-sm font-semibold text-[#0F172A] mb-3">Join the attendee community</p>
