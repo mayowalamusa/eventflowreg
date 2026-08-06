@@ -144,6 +144,13 @@ function MyEventsPage() {
                           Edit
                         </button>
                         <button
+                          onClick={() => navigate(`/dashboard/events/${event.id}/form`)}
+                          className="text-xs text-[#4F46E5] font-medium hover:underline"
+                        >
+                          Form
+                        </button>
+
+                        <button
                           onClick={() => togglePublish.mutate(event)}
                           className="text-xs text-[#0F172A] hover:underline"
                         >
