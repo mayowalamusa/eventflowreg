@@ -122,27 +122,40 @@ function EventDetailPage() {
           <div className="lg:col-span-2 flex flex-col gap-6">
             {/* Organizer */}
             <div className="bg-white rounded-[14px] border border-[#E2E8F0] p-5 flex items-center gap-4">
-              <img src={event.organizerAvatar} alt={event.organizer} className="size-12 rounded-full object-cover" />
+              <div className="size-12 rounded-full bg-[#EEF2FF] text-[#4F46E5] font-bold flex items-center justify-center">
+                {(event.organizer_name || "E").charAt(0).toUpperCase()}
+              </div>
               <div className="flex-1">
                 <p className="text-xs text-[#94A3B8] mb-0.5">Organised by</p>
-                <p className="font-semibold text-[#0F172A]">{event.organizer}</p>
+                <p className="font-semibold text-[#0F172A]">{event.organizer_name || "EventFlow host"}</p>
               </div>
-              <button
-                onClick={() => navigate(`/organizers/${event.id}`)}
-                className="text-sm text-[#4F46E5] font-medium hover:underline shrink-0"
-              >
-                View profile
-              </button>
+              {event.organizer_profile_id && (
+                <button
+                  onClick={() => navigate(`/organizers/${event.organizer_profile_id}`)}
+                  className="text-sm text-[#4F46E5] font-medium hover:underline shrink-0"
+                >
+                  View profile
+                </button>
+              )}
             </div>
 
             {/* Info grid */}
             <div className="bg-white rounded-[14px] border border-[#E2E8F0] p-5 grid grid-cols-2 gap-5">
               {[
-                { label: "Date", value: formatDate(event.date), icon: "📅" },
-                { label: "Time", value: event.time, icon: "🕐" },
-                { label: "Location", value: event.location, icon: "📍" },
-                { label: "Capacity", value: `${event.attendees.toLocaleString()} / ${event.capacity.toLocaleString()} registered`, icon: "👥" },
+                { label: "Date", value: formatDate(event.event_date), icon: "📅" },
+                { label: "Time", value: `${(event.event_time || "").slice(0, 5)} (${event.timezone})`, icon: "🕐" },
+                {
+                  label: "Location",
+                  value: event.event_type === "online" ? "Online event" : event.location || "To be announced",
+                  icon: "📍",
+                },
+                {
+                  label: "Capacity",
+                  value: capacity > 0 ? `${capacity.toLocaleString()} spots` : "Unlimited",
+                  icon: "👥",
+                },
               ].map((item) => (
+
                 <div key={item.label} className="flex items-start gap-3">
                   <span className="text-xl">{item.icon}</span>
                   <div>
