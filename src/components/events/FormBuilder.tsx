@@ -460,14 +460,18 @@ function PreviewField({ field }: { field: DraftField }) {
   }
   if (field.field_type === "dropdown") {
     return (
-      <Select label={label} required={field.is_required} hint={field.help_text || undefined} disabled>
-        <option>{field.placeholder || "Select an option"}</option>
-        {options.map((o) => (
-          <option key={o}>{o}</option>
-        ))}
-      </Select>
+      <div className="flex flex-col gap-1.5">
+        <Select
+          label={label}
+          required={field.is_required}
+          placeholder={field.placeholder || "Select an option"}
+          options={options.map((o) => ({ value: o, label: o }))}
+        />
+        {field.help_text && <p className="text-xs text-[#94A3B8]">{field.help_text}</p>}
+      </div>
     );
   }
+
   if (field.field_type === "radio" || field.field_type === "checkbox") {
     return (
       <div className="flex flex-col gap-1.5">
