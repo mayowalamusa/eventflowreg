@@ -646,7 +646,15 @@ export type Database = {
         | "custom"
       event_type: "online" | "physical"
       event_visibility: "public" | "private" | "unlisted"
-      field_type: "short_text" | "long_text" | "dropdown" | "radio" | "checkbox"
+      field_type:
+        | "short_text"
+        | "long_text"
+        | "dropdown"
+        | "radio"
+        | "checkbox"
+        | "phone"
+        | "email"
+        | "date"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -785,7 +793,16 @@ export const Constants = {
       ],
       event_type: ["online", "physical"],
       event_visibility: ["public", "private", "unlisted"],
-      field_type: ["short_text", "long_text", "dropdown", "radio", "checkbox"],
+      field_type: [
+        "short_text",
+        "long_text",
+        "dropdown",
+        "radio",
+        "checkbox",
+        "phone",
+        "email",
+        "date",
+      ],
     },
   },
 } as const
