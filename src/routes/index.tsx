@@ -221,7 +221,7 @@ function HomePage() {
             {categories.map((cat) => (
               <button
                 key={cat.name}
-                onClick={() => navigate(`/discover?category=${cat.name}`)}
+                onClick={() => navigate(`/discover?category=${encodeURIComponent(cat.name)}`)}
                 className="group flex flex-col items-center gap-2 p-4 bg-white rounded-[14px] border border-[#E2E8F0] hover:border-[#4F46E5] hover:shadow-md transition-all duration-200"
               >
                 <span className="text-2xl">{cat.icon}</span>
@@ -231,7 +231,13 @@ function HomePage() {
                 <span className="text-xs text-[#94A3B8]">{cat.count}</span>
               </button>
             ))}
+            {categories.length === 0 && (
+              <p className="col-span-full text-sm text-[#64748B] text-center py-6">
+                Categories appear here as hosts publish events.
+              </p>
+            )}
           </div>
+
         </div>
       </section>
 
