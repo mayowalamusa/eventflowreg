@@ -153,20 +153,21 @@ function HomePage() {
 
               <div className="flex items-center gap-6">
                 <div>
-                  <p className="text-2xl font-bold text-[#0F172A]">50K+</p>
-                  <p className="text-xs text-[#64748B]">Events hosted</p>
+                  <p className="text-2xl font-bold text-[#0F172A]">{publicEvents.length}</p>
+                  <p className="text-xs text-[#64748B]">Live events</p>
                 </div>
                 <div className="w-px h-8 bg-[#E2E8F0]" />
                 <div>
-                  <p className="text-2xl font-bold text-[#0F172A]">1.2M</p>
-                  <p className="text-xs text-[#64748B]">Registrations</p>
+                  <p className="text-2xl font-bold text-[#0F172A]">{upcomingCount}</p>
+                  <p className="text-xs text-[#64748B]">Upcoming</p>
                 </div>
                 <div className="w-px h-8 bg-[#E2E8F0]" />
                 <div>
-                  <p className="text-2xl font-bold text-[#0F172A]">12</p>
-                  <p className="text-xs text-[#64748B]">Countries</p>
+                  <p className="text-2xl font-bold text-[#0F172A]">{categories.length}</p>
+                  <p className="text-xs text-[#64748B]">Categories</p>
                 </div>
               </div>
+
             </div>
 
             {/* Hero visual */}
