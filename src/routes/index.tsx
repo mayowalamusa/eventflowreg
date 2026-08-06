@@ -1,25 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@/lib/nav";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import EventCard from "@/components/events/EventCard";
 import Button from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { events, formatDate } from "@/data/mockData";
+import { categoryIcon, fetchPublicEvents, isUpcoming } from "@/lib/publicEvents";
 
-const featuredEvents = events.filter((e) => e.featured);
-
-const categories = [
-  { name: "Business", icon: "💼", count: 48 },
-  { name: "Technology", icon: "💻", count: 63 },
-  { name: "Education", icon: "🎓", count: 37 },
-  { name: "NGOs", icon: "🌍", count: 15 },
-  { name: "Creator Economy", icon: "🎨", count: 24 },
-  { name: "Faith & Community", icon: "⛪", count: 22 },
-  { name: "Health", icon: "🏃", count: 29 },
-  { name: "Career Development", icon: "🚀", count: 41 },
-];
 
 const benefits = [
   {
