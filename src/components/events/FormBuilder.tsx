@@ -326,8 +326,9 @@ export default function FormBuilder({ eventId }: { eventId: string }) {
                       <Select
                         label="Field type"
                         value={field.field_type}
-                        onChange={(e) => {
-                          const next = e.target.value as FieldType;
+                        options={FIELD_TYPES.map((t) => ({ value: t.value, label: t.label }))}
+                        onChange={(value) => {
+                          const next = value as FieldType;
                           update(field.key, {
                             field_type: next,
                             options:
@@ -336,13 +337,8 @@ export default function FormBuilder({ eventId }: { eventId: string }) {
                                 : field.options,
                           });
                         }}
-                      >
-                        {FIELD_TYPES.map((t) => (
-                          <option key={t.value} value={t.value}>
-                            {t.label}
-                          </option>
-                        ))}
-                      </Select>
+                      />
+
                     </div>
 
                     <div className="grid sm:grid-cols-2 gap-4">
