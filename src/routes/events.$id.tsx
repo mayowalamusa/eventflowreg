@@ -192,19 +192,18 @@ function EventDetailPage() {
                 ))}
               </div>
 
-              {/* Capacity bar */}
-              <div className="mb-5">
-                <div className="flex justify-between text-xs text-[#64748B] mb-1.5">
-                  <span>{event.attendees.toLocaleString()} registered</span>
-                  <span>{pct}% full</span>
+              {capacity > 0 && (
+                <div className="mb-5">
+                  <div className="flex justify-between text-xs text-[#64748B] mb-1.5">
+                    <span>Capacity</span>
+                    <span>{capacity.toLocaleString()} spots</span>
+                  </div>
+                  <div className="h-2 bg-[#E2E8F0] rounded-full overflow-hidden">
+                    <div className="h-full bg-[#4F46E5] rounded-full" style={{ width: `${pct}%` }} />
+                  </div>
                 </div>
-                <div className="h-2 bg-[#E2E8F0] rounded-full overflow-hidden">
-                  <div className="h-full bg-[#4F46E5] rounded-full" style={{ width: `${pct}%` }} />
-                </div>
-                <p className="text-xs text-[#94A3B8] mt-1.5">
-                  {(event.capacity - event.attendees).toLocaleString()} spots left
-                </p>
-              </div>
+              )}
+
 
               <Button fullWidth size="lg" onClick={() => navigate(`/events/${event.id}/register`)}>
                 Register Now
