@@ -1,12 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "@/lib/nav";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import EventCard from "@/components/events/EventCard";
 import { Input } from "@/components/ui/Input";
-import Badge from "@/components/ui/Badge";
-import { events, categories, type Category } from "@/data/mockData";
+import { fetchPublicEvents, isFree } from "@/lib/publicEvents";
 
 const locationTypes = ["All", "In-Person", "Online"];
 const priceTypes = ["All", "Free", "Paid"];
@@ -18,25 +18,44 @@ function DiscoveryPage() {
   const [locationType, setLocationType] = useState("All");
   const [priceType, setPriceType] = useState("All");
 
+  const { data: events = [], isLoading } = useQuery({
+    queryKey: ["public-events"],
+    queryFn: () => fetchPublicEvents(200),
+  });
+
+  const categories = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const e of events) {
+      const name = e.category || "Other";
+      counts.set(name, (counts.get(name) ?? 0) + 1);
+    }
+    return Array.from(counts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .map(([name, count]) => ({ name, count }));
+  }, [events]);
+
   const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
     return events.filter((e) => {
       const matchSearch =
-        !search ||
-        e.title.toLowerCase().includes(search.toLowerCase()) ||
-        e.description.toLowerCase().includes(search.toLowerCase()) ||
-        e.location.toLowerCase().includes(search.toLowerCase());
-      const matchCat = activeCategory === "All" || e.category === activeCategory;
+        !q ||
+        e.title.toLowerCase().includes(q) ||
+        (e.description ?? "").toLowerCase().includes(q) ||
+        (e.location ?? "").toLowerCase().includes(q) ||
+        (e.organizer_name ?? "").toLowerCase().includes(q);
+      const matchCat = activeCategory === "All" || (e.category || "Other") === activeCategory;
       const matchLoc =
         locationType === "All" ||
-        (locationType === "Online" && e.locationType === "online") ||
-        (locationType === "In-Person" && e.locationType === "in-person");
+        (locationType === "Online" && e.event_type === "online") ||
+        (locationType === "In-Person" && e.event_type === "physical");
       const matchPrice =
         priceType === "All" ||
-        (priceType === "Free" && e.price === 0) ||
-        (priceType === "Paid" && e.price > 0);
+        (priceType === "Free" && isFree(e)) ||
+        (priceType === "Paid" && !isFree(e));
       return matchSearch && matchCat && matchLoc && matchPrice;
     });
-  }, [search, activeCategory, locationType, priceType]);
+  }, [events, search, activeCategory, locationType, priceType]);
+
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col">
@@ -152,7 +171,10 @@ function DiscoveryPage() {
               </p>
             </div>
 
-            {filtered.length === 0 ? (
+            {isLoading ? (
+              <div className="text-center py-24 text-sm text-[#64748B]">Loading events…</div>
+            ) : filtered.length === 0 ? (
+
               <div className="text-center py-24">
                 <div className="text-5xl mb-4">🔍</div>
                 <h3 className="text-lg font-semibold text-[#0F172A] mb-2">No events found</h3>

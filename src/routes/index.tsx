@@ -1,25 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@/lib/nav";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import EventCard from "@/components/events/EventCard";
 import Button from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { events, formatDate } from "@/data/mockData";
+import { categoryIcon, fetchPublicEvents, isUpcoming } from "@/lib/publicEvents";
 
-const featuredEvents = events.filter((e) => e.featured);
-
-const categories = [
-  { name: "Business", icon: "💼", count: 48 },
-  { name: "Technology", icon: "💻", count: 63 },
-  { name: "Education", icon: "🎓", count: 37 },
-  { name: "NGOs", icon: "🌍", count: 15 },
-  { name: "Creator Economy", icon: "🎨", count: 24 },
-  { name: "Faith & Community", icon: "⛪", count: 22 },
-  { name: "Health", icon: "🏃", count: 29 },
-  { name: "Career Development", icon: "🚀", count: 41 },
-];
 
 const benefits = [
   {
@@ -85,6 +74,31 @@ const testimonials = [
 function HomePage() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
+
+  const { data: publicEvents = [], isLoading } = useQuery({
+    queryKey: ["public-events"],
+    queryFn: () => fetchPublicEvents(60),
+  });
+
+  const upcoming = useMemo(() => publicEvents.filter(isUpcoming), [publicEvents]);
+  const upcomingCount = upcoming.length;
+  const featuredEvents = useMemo(
+    () => (upcoming.length ? upcoming : publicEvents).slice(0, 4),
+    [upcoming, publicEvents],
+  );
+
+  const categories = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const e of publicEvents) {
+      const name = e.category || "Other";
+      counts.set(name, (counts.get(name) ?? 0) + 1);
+    }
+    return Array.from(counts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 8)
+      .map(([name, count]) => ({ name, count, icon: categoryIcon(name) }));
+  }, [publicEvents]);
+
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -153,20 +167,21 @@ function HomePage() {
 
               <div className="flex items-center gap-6">
                 <div>
-                  <p className="text-2xl font-bold text-[#0F172A]">50K+</p>
-                  <p className="text-xs text-[#64748B]">Events hosted</p>
+                  <p className="text-2xl font-bold text-[#0F172A]">{publicEvents.length}</p>
+                  <p className="text-xs text-[#64748B]">Live events</p>
                 </div>
                 <div className="w-px h-8 bg-[#E2E8F0]" />
                 <div>
-                  <p className="text-2xl font-bold text-[#0F172A]">1.2M</p>
-                  <p className="text-xs text-[#64748B]">Registrations</p>
+                  <p className="text-2xl font-bold text-[#0F172A]">{upcomingCount}</p>
+                  <p className="text-xs text-[#64748B]">Upcoming</p>
                 </div>
                 <div className="w-px h-8 bg-[#E2E8F0]" />
                 <div>
-                  <p className="text-2xl font-bold text-[#0F172A]">12</p>
-                  <p className="text-xs text-[#64748B]">Countries</p>
+                  <p className="text-2xl font-bold text-[#0F172A]">{categories.length}</p>
+                  <p className="text-xs text-[#64748B]">Categories</p>
                 </div>
               </div>
+
             </div>
 
             {/* Hero visual */}
@@ -221,7 +236,7 @@ function HomePage() {
             {categories.map((cat) => (
               <button
                 key={cat.name}
-                onClick={() => navigate(`/discover?category=${cat.name}`)}
+                onClick={() => navigate(`/discover?category=${encodeURIComponent(cat.name)}`)}
                 className="group flex flex-col items-center gap-2 p-4 bg-white rounded-[14px] border border-[#E2E8F0] hover:border-[#4F46E5] hover:shadow-md transition-all duration-200"
               >
                 <span className="text-2xl">{cat.icon}</span>
@@ -231,7 +246,13 @@ function HomePage() {
                 <span className="text-xs text-[#94A3B8]">{cat.count}</span>
               </button>
             ))}
+            {categories.length === 0 && (
+              <p className="col-span-full text-sm text-[#64748B] text-center py-6">
+                Categories appear here as hosts publish events.
+              </p>
+            )}
           </div>
+
         </div>
       </section>
 
@@ -247,11 +268,21 @@ function HomePage() {
               Browse all events
             </Button>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {featuredEvents.map((event) => (
-              <EventCard key={event.id} event={event} />
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="text-center py-16 text-sm text-[#64748B]">Loading events…</div>
+          ) : featuredEvents.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="text-4xl mb-3">📅</div>
+              <p className="text-sm text-[#64748B]">No public events yet — be the first to publish one.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              {featuredEvents.map((event) => (
+                <EventCard key={event.id} event={event} />
+              ))}
+            </div>
+          )}
+
         </div>
       </section>
 
