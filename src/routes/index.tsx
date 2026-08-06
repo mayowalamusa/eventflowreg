@@ -86,6 +86,31 @@ function HomePage() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
 
+  const { data: publicEvents = [], isLoading } = useQuery({
+    queryKey: ["public-events"],
+    queryFn: () => fetchPublicEvents(60),
+  });
+
+  const upcoming = useMemo(() => publicEvents.filter(isUpcoming), [publicEvents]);
+  const upcomingCount = upcoming.length;
+  const featuredEvents = useMemo(
+    () => (upcoming.length ? upcoming : publicEvents).slice(0, 4),
+    [upcoming, publicEvents],
+  );
+
+  const categories = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const e of publicEvents) {
+      const name = e.category || "Other";
+      counts.set(name, (counts.get(name) ?? 0) + 1);
+    }
+    return Array.from(counts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 8)
+      .map(([name, count]) => ({ name, count, icon: categoryIcon(name) }));
+  }, [publicEvents]);
+
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     navigate(`/discover?q=${encodeURIComponent(search)}`);
