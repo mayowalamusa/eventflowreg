@@ -20,10 +20,12 @@ export function generateRegistrationId(): string {
   const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   let code = "";
   const bytes = new Uint8Array(8);
-  (globalThis.crypto ?? ({ getRandomValues: () => bytes } as Crypto)).getRandomValues(bytes);
+  if (globalThis.crypto?.getRandomValues) globalThis.crypto.getRandomValues(bytes);
+  else for (let i = 0; i < bytes.length; i++) bytes[i] = Math.floor(Math.random() * 256);
   for (const b of bytes) code += alphabet[b % alphabet.length];
   return `EVT-${code.slice(0, 4)}-${code.slice(4, 8)}`;
 }
+
 
 export async function fetchEventTickets(eventId: string): Promise<TicketRow[]> {
   const { data, error } = await supabase
