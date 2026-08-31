@@ -1,1 +1,15 @@
 project_id = "libtexgniuavbjpyggto"
+
+# Attendees registering for an event are anonymous (no login required), so
+# this function can't require a Supabase-issued JWT. It has its own
+# authorization model instead: the caller must supply the registration's
+# UUID id, an unguessable value only known to the browser that just created
+# it. See supabase/functions/send-registration-email/index.ts for details.
+[functions.send-registration-email]
+verify_jwt = false
+
+# Google redirects the browser here directly with no app JWT attached —
+# see supabase/functions/google-oauth-callback/index.ts for how it protects
+# itself instead (a single-use, short-lived, user-scoped `state` token).
+[functions.google-oauth-callback]
+verify_jwt = false

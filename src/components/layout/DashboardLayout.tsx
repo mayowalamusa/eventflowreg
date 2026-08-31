@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate, Outlet } from "@/lib/nav";
 import { useAuth } from "@/hooks/useAuth";
+import { useProfile } from "@/hooks/useProfile";
 
 
 const navItems = [
@@ -72,13 +73,19 @@ export default function DashboardLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, isAdmin, signOut } = useAuth();
+  const { profile } = useProfile();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  // profiles.full_name is the editable application identity (set via
+  // Account Settings); user_metadata is only the signup-time snapshot from
+  // Supabase Auth, used as a fallback until the user saves a profile.
   const displayName =
-    (user?.user_metadata?.["full_name"] as string | undefined) ??
-    user?.email?.split("@")[0] ??
+    profile?.full_name ||
+    (user?.user_metadata?.["full_name"] as string | undefined) ||
+    user?.email?.split("@")[0] ||
     "Host";
-  const avatarUrl = user?.user_metadata?.["avatar_url"] as string | undefined;
+  const avatarUrl =
+    profile?.avatar_url || (user?.user_metadata?.["avatar_url"] as string | undefined);
 
   const handleSignOut = async () => {
     await signOut();

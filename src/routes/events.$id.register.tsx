@@ -28,7 +28,7 @@ type Step = 1 | 2 | 3;
 
 const trustIndicators = [
   { icon: "🔒", label: "Secure Registration", desc: "256-bit SSL encrypted" },
-  { icon: "⚡", label: "Instant Confirmation", desc: "Email sent immediately" },
+  { icon: "⚡", label: "Instant Confirmation", desc: "Registration confirmed right away" },
   { icon: "📅", label: "Calendar Reminder", desc: "Auto-added to your calendar" },
 ];
 
@@ -227,8 +227,10 @@ function RegistrationPage() {
         customAnswers: buildCustomAnswers(fields, answers),
       });
     },
-    onSuccess: ({ registrationId }) => {
-      navigate(`/events/${event?.slug ?? id}/success?rid=${encodeURIComponent(registrationId)}`);
+    onSuccess: ({ id: newRegistrationId, registrationId }) => {
+      navigate(
+        `/events/${event?.slug ?? id}/success?rid=${encodeURIComponent(registrationId)}&regId=${encodeURIComponent(newRegistrationId)}`,
+      );
     },
     onError: (error: unknown) => {
       toast.error(error instanceof Error ? error.message : "Could not complete your registration.");

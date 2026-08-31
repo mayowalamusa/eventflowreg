@@ -94,27 +94,31 @@ export async function submitRegistration({
   attendee,
   ticket,
   customAnswers,
-}: SubmitRegistrationArgs): Promise<{ registrationId: string }> {
+}: SubmitRegistrationArgs): Promise<{ id: string; registrationId: string }> {
   const parsed = attendeeSchema.parse(attendee);
   const registrationId = generateRegistrationId();
   const answers = { ...customAnswers };
   if (parsed.org) answers["Organisation"] = parsed.org;
 
-  const { error } = await supabase.from("registrations").insert({
-    event_id: eventId,
-    form_id: formId,
-    full_name: `${parsed.firstName} ${parsed.lastName}`.trim(),
-    email: parsed.email.toLowerCase(),
-    phone: parsed.phone || null,
-    custom_answers: answers as never,
-    ticket_id: ticket?.id ?? null,
-    ticket_code: registrationId,
-    amount_paid_cents: ticket?.price_cents ?? 0,
-    status: "confirmed",
-  });
+  const { data, error } = await supabase
+    .from("registrations")
+    .insert({
+      event_id: eventId,
+      form_id: formId,
+      full_name: `${parsed.firstName} ${parsed.lastName}`.trim(),
+      email: parsed.email.toLowerCase(),
+      phone: parsed.phone || null,
+      custom_answers: answers as never,
+      ticket_id: ticket?.id ?? null,
+      ticket_code: registrationId,
+      amount_paid_cents: ticket?.price_cents ?? 0,
+      status: "confirmed",
+    })
+    .select("id")
+    .single();
   if (error) throw error;
 
-  return { registrationId };
+  return { id: data.id, registrationId };
 }
 
 const SAFE_PROTOCOLS = ["http:", "https:", "mailto:", "tel:"];

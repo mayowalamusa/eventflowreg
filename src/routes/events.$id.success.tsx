@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate, useSearchParams } from "@/lib/nav";
 import { useQuery } from "@tanstack/react-query";
 import Navbar from "@/components/layout/Navbar";
@@ -7,13 +8,33 @@ import Button from "@/components/ui/Button";
 import EventCard from "@/components/events/EventCard";
 import { bannerOrFallback, fetchPublicEvent, fetchPublicEvents } from "@/lib/publicEvents";
 import { destinationLabel, safeDestinationUrl } from "@/lib/registration";
+import { supabase } from "@/integrations/supabase/client";
+
+type EmailState = "idle" | "sending" | "sent" | "already_sent" | "failed";
+
+function emailStatusCopy(state: EmailState): string | null {
+  switch (state) {
+    case "sending":
+      return "Sending a confirmation email to your inbox…";
+    case "sent":
+    case "already_sent":
+      return "A confirmation email is on its way to your inbox.";
+    case "failed":
+      return "We couldn't send a confirmation email right now — but you're registered. Save your registration code below.";
+    default:
+      return null;
+  }
+}
 
 function RegistrationSuccessPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const registrationId = searchParams.get("rid");
+  const regRowId = searchParams.get("regId");
 
+  const [emailState, setEmailState] = useState<EmailState>("idle");
+  const attemptedFor = useRef<string | null>(null);
 
   const { data: event, isLoading } = useQuery({
     queryKey: ["public-event", id],
@@ -26,6 +47,37 @@ function RegistrationSuccessPage() {
   });
 
   const recommended = allEvents.filter((e) => e.id !== event?.id).slice(0, 3);
+
+  const sendConfirmationEmail = async () => {
+    if (!regRowId) return;
+    attemptedFor.current = regRowId;
+    setEmailState("sending");
+    try {
+      const { data, error } = await supabase.functions.invoke("send-registration-email", {
+        body: { registrationId: regRowId },
+      });
+      if (error) throw error;
+      const status = (data as { status?: string } | null)?.status;
+      if (status === "sent") setEmailState("sent");
+      else if (status === "already_sent") setEmailState("already_sent");
+      else setEmailState("failed");
+    } catch {
+      // Never let an email problem look like a registration problem — the
+      // registration already succeeded before this ever runs.
+      setEmailState("failed");
+    }
+  };
+
+  // Fire once per registration id. A page refresh re-invokes the function,
+  // but the function itself is idempotent (won't send twice).
+  useEffect(() => {
+    if (regRowId && attemptedFor.current !== regRowId) {
+      void sendConfirmationEmail();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [regRowId]);
+
+  const emailCopy = emailStatusCopy(emailState);
 
   if (isLoading || !event) {
     return (
@@ -51,9 +103,28 @@ function RegistrationSuccessPage() {
           </div>
 
           <h1 className="text-3xl font-bold text-[#0F172A] mb-3">You're registered!</h1>
-          <p className="text-[#475569] text-lg mb-8 leading-relaxed">
-            Your spot at <span className="font-semibold text-[#0F172A]">{event.title}</span> is confirmed. A confirmation has been sent to your email.
+          <p className="text-[#475569] text-lg mb-3 leading-relaxed">
+            Your spot at <span className="font-semibold text-[#0F172A]">{event.title}</span> is confirmed.
           </p>
+          {emailCopy && (
+            <p
+              className={[
+                "text-sm mb-6",
+                emailState === "failed" ? "text-[#B45309]" : "text-[#64748B]",
+              ].join(" ")}
+            >
+              {emailCopy}
+              {emailState === "failed" && (
+                <button
+                  onClick={() => void sendConfirmationEmail()}
+                  className="ml-2 font-medium text-[#4F46E5] hover:underline"
+                >
+                  Try again
+                </button>
+              )}
+            </p>
+          )}
+          {!emailCopy && <div className="mb-8" />}
 
           {/* Event summary card */}
           <div className="bg-white rounded-[16px] border border-[#E2E8F0] overflow-hidden mb-8 text-left">
