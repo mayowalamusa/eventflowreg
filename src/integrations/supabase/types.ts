@@ -517,6 +517,9 @@ export type Database = {
           created_at: string
           custom_answers: Json
           email: string
+          email_error: string | null
+          email_sent_at: string | null
+          email_status: string
           event_id: string
           form_id: string | null
           full_name: string
@@ -537,6 +540,9 @@ export type Database = {
           created_at?: string
           custom_answers?: Json
           email: string
+          email_error?: string | null
+          email_sent_at?: string | null
+          email_status?: string
           event_id: string
           form_id?: string | null
           full_name: string
@@ -557,6 +563,9 @@ export type Database = {
           created_at?: string
           custom_answers?: Json
           email?: string
+          email_error?: string | null
+          email_sent_at?: string | null
+          email_status?: string
           event_id?: string
           form_id?: string | null
           full_name?: string
