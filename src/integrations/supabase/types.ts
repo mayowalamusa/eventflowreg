@@ -10,40 +10,10 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.15"
+    PostgrestVersion: "14.5"
   }
   public: {
     Tables: {
-      admin_audit_log: {
-        Row: {
-          action: string
-          actor_id: string
-          created_at: string
-          details: Json
-          id: string
-          target_id: string
-          target_type: string
-        }
-        Insert: {
-          action: string
-          actor_id: string
-          created_at?: string
-          details?: Json
-          id?: string
-          target_id: string
-          target_type: string
-        }
-        Update: {
-          action?: string
-          actor_id?: string
-          created_at?: string
-          details?: Json
-          id?: string
-          target_id?: string
-          target_type?: string
-        }
-        Relationships: []
-      }
       event_fields: {
         Row: {
           created_at: string
@@ -165,7 +135,6 @@ export type Database = {
       }
       events: {
         Row: {
-          archived_at: string | null
           banner_url: string | null
           base_price_cents: number
           capacity: number | null
@@ -203,7 +172,6 @@ export type Database = {
           visibility: Database["public"]["Enums"]["event_visibility"]
         }
         Insert: {
-          archived_at?: string | null
           banner_url?: string | null
           base_price_cents?: number
           capacity?: number | null
@@ -241,7 +209,6 @@ export type Database = {
           visibility?: Database["public"]["Enums"]["event_visibility"]
         }
         Update: {
-          archived_at?: string | null
           banner_url?: string | null
           base_price_cents?: number
           capacity?: number | null
