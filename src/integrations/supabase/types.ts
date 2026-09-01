@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.15"
+    PostgrestVersion: "14.5"
   }
   public: {
     Tables: {
@@ -299,6 +299,7 @@ export type Database = {
         Row: {
           access_token: string | null
           created_at: string
+          field_mapping: Json
           google_account_id: string | null
           google_email: string | null
           id: string
@@ -319,6 +320,7 @@ export type Database = {
         Insert: {
           access_token?: string | null
           created_at?: string
+          field_mapping?: Json
           google_account_id?: string | null
           google_email?: string | null
           id?: string
@@ -339,6 +341,7 @@ export type Database = {
         Update: {
           access_token?: string | null
           created_at?: string
+          field_mapping?: Json
           google_account_id?: string | null
           google_email?: string | null
           id?: string
@@ -355,6 +358,24 @@ export type Database = {
           updated_at?: string
           user_id?: string
           worksheet_name?: string
+        }
+        Relationships: []
+      }
+      google_oauth_states: {
+        Row: {
+          created_at: string
+          state: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          state: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          state?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -550,6 +571,9 @@ export type Database = {
           created_at: string
           custom_answers: Json
           email: string
+          email_error: string | null
+          email_sent_at: string | null
+          email_status: string
           event_id: string
           form_id: string | null
           full_name: string
@@ -570,6 +594,9 @@ export type Database = {
           created_at?: string
           custom_answers?: Json
           email: string
+          email_error?: string | null
+          email_sent_at?: string | null
+          email_status?: string
           event_id: string
           form_id?: string | null
           full_name: string
@@ -590,6 +617,9 @@ export type Database = {
           created_at?: string
           custom_answers?: Json
           email?: string
+          email_error?: string | null
+          email_sent_at?: string | null
+          email_status?: string
           event_id?: string
           form_id?: string | null
           full_name?: string
@@ -634,6 +664,59 @@ export type Database = {
           },
         ]
       }
+      sheet_sync_runs: {
+        Row: {
+          added_count: number
+          connection_id: string
+          details: Json
+          error: string | null
+          failed_count: number
+          finished_at: string | null
+          id: string
+          processed_count: number
+          started_at: string
+          status: string
+          updated_count: number
+          user_id: string
+        }
+        Insert: {
+          added_count?: number
+          connection_id: string
+          details?: Json
+          error?: string | null
+          failed_count?: number
+          finished_at?: string | null
+          id?: string
+          processed_count?: number
+          started_at?: string
+          status?: string
+          updated_count?: number
+          user_id: string
+        }
+        Update: {
+          added_count?: number
+          connection_id?: string
+          details?: Json
+          error?: string | null
+          failed_count?: number
+          finished_at?: string | null
+          id?: string
+          processed_count?: number
+          started_at?: string
+          status?: string
+          updated_count?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sheet_sync_runs_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "google_connections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -667,6 +750,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_suspended: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "host"
