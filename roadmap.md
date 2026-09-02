@@ -19,3 +19,10 @@
 - [ ] Google Sheets: hard duplicate-row prevention (atomic claim before append)
 - [ ] Discovery: tag filter, Featured / Trending / Upcoming sections
 - [ ] Admin: feature events, hide events
+
+## Final polish (done)
+- Shared Skeleton / EmptyState / ErrorState components
+- Loading skeletons on discovery, dashboard, events and registrations
+- Skip link, focus-visible rings, aria labels, decorative icons hidden
+- Fade-in animations + prefers-reduced-motion support
+- Lazy image loading, mock data removed (src/data deleted, helpers in src/lib/format.ts)
