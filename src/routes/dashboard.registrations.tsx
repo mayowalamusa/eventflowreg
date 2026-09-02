@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { SkeletonRows } from "@/components/ui/Skeleton";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link } from "@/lib/nav";
@@ -273,7 +274,10 @@ function RegistrationsPage() {
         </div>
 
         {isInitialLoad && (
-          <div className="text-center py-16 text-sm text-[#64748B]">Loading registrations…</div>
+          <div aria-busy="true" aria-live="polite">
+            <span className="sr-only">Loading registrations</span>
+            <SkeletonRows rows={6} />
+          </div>
         )}
 
         {!isInitialLoad && !registrationsQuery.isError && rows.length === 0 && (
