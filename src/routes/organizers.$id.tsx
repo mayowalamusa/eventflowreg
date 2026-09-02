@@ -27,7 +27,7 @@ async function fetchOrganizer(idOrHandle: string) {
   if (error) throw error;
   if (!profile) return null;
 
-  const [{ data: eventRows }, { count: followers }] = await Promise.all([
+  const [{ data: eventRows }, { data: followers }] = await Promise.all([
     supabase
       .from("events")
       .select("id, slug, title, description, banner_url, event_date, event_time, event_type, location, category")
@@ -35,13 +35,12 @@ async function fetchOrganizer(idOrHandle: string) {
       .eq("is_published", true)
       .eq("visibility", "public")
       .order("event_date", { ascending: true }),
-    supabase
-      .from("organizer_followers")
-      .select("id", { count: "exact", head: true })
-      .eq("organizer_profile_id", profile.id),
+    // Follower identities are private; the public page only gets an aggregate count.
+    supabase.rpc("organizer_follower_count", { _profile_id: profile.id }),
   ]);
 
   return { profile, events: eventRows ?? [], followers: followers ?? 0 };
+
 }
 
 function OrganizerProfilePage() {
