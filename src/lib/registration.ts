@@ -121,14 +121,14 @@ export async function submitRegistration({
   return { id: data.id, registrationId };
 }
 
-const SAFE_PROTOCOLS = ["http:", "https:", "mailto:", "tel:"];
+export const SAFE_DESTINATION_PROTOCOLS = ["http:", "https:", "mailto:", "tel:"];
 
 /** Returns the attendee redirect target for an event, or null when unsafe/absent. */
 export function safeDestinationUrl(url: string | null | undefined): string | null {
   if (!url) return null;
   try {
     const parsed = new URL(url);
-    return SAFE_PROTOCOLS.includes(parsed.protocol) ? parsed.toString() : null;
+    return SAFE_DESTINATION_PROTOCOLS.includes(parsed.protocol) ? parsed.toString() : null;
   } catch {
     return null;
   }

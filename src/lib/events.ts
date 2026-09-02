@@ -1,5 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
+import { validateImageFile } from "@/lib/imageUpload";
 
 export type EventRow = Database["public"]["Tables"]["events"]["Row"];
 export type EventType = Database["public"]["Enums"]["event_type"];
@@ -105,6 +106,8 @@ export function eventPublicUrl(slug: string): string {
 
 /** Uploads a banner to private storage and returns the stored object path. */
 export async function uploadBanner(file: File, userId: string): Promise<string> {
+  const validationError = validateImageFile(file);
+  if (validationError) throw new Error(validationError);
   const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
   const path = `${userId}/${crypto.randomUUID()}.${ext}`;
   const { error } = await supabase.storage

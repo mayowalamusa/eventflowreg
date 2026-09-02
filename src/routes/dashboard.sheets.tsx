@@ -41,7 +41,7 @@ function runStatusBadge(status: SyncRun["status"]) {
  * retry" — retrying won't fix a missing configuration. */
 function friendlyGoogleErrorMessage(err: unknown): string {
   const raw = err instanceof Error ? err.message : String(err ?? "");
-  const notFound = /not.?found|failed to fetch|network|404/i.test(raw);
+  const notFound = /not.?found|failed to (fetch|send)|network|404|edge function/i.test(raw);
   if (notFound) {
     return "Google Sheets isn't set up for this EventFlow project yet. Use CSV export below in the meantime.";
   }
@@ -185,7 +185,11 @@ function GoogleSheetsPage() {
           ].join(" ")}
         >
           <span>{banner.message}</span>
-          <button onClick={() => setBanner(null)} className="shrink-0 opacity-60 hover:opacity-100">
+          <button
+            onClick={() => setBanner(null)}
+            aria-label="Dismiss"
+            className="shrink-0 opacity-60 hover:opacity-100"
+          >
             ✕
           </button>
         </div>
@@ -308,7 +312,7 @@ function GoogleSheetsPage() {
                 {EVENTFLOW_FIELDS.map((f) => {
                   const enabled = f.key in mappingDraft;
                   return (
-                    <div key={f.key} className="flex items-center gap-3 py-3">
+                    <div key={f.key} className="flex flex-wrap items-center gap-3 py-3">
                       <input
                         type="checkbox"
                         checked={enabled}
@@ -320,11 +324,13 @@ function GoogleSheetsPage() {
                             return next;
                           });
                         }}
-                        className="size-4 accent-[#4F46E5]"
+                        className="size-4 accent-[#4F46E5] shrink-0"
                       />
-                      <span className="text-sm text-[#475569] w-40 shrink-0">{f.label}</span>
+                      <span className="text-sm text-[#475569] w-32 sm:w-40 shrink-0">
+                        {f.label}
+                      </span>
                       <svg
-                        className="size-4 text-[#94A3B8] shrink-0"
+                        className="size-4 text-[#94A3B8] shrink-0 hidden sm:block"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -346,7 +352,7 @@ function GoogleSheetsPage() {
                           }))
                         }
                         placeholder="Column header"
-                        className="max-w-[220px]"
+                        className="flex-1 min-w-[140px] sm:max-w-[220px]"
                       />
                     </div>
                   );

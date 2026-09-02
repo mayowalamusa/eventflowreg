@@ -82,7 +82,7 @@ export async function fetchAllHostRegistrationsForExport({
 }
 
 /** RFC 4180-ish escaping: quote any field containing a comma, quote, or newline. */
-function csvCell(value: string): string {
+export function csvCell(value: string): string {
   if (/[",\n]/.test(value)) {
     return `"${value.replace(/"/g, '""')}"`;
   }

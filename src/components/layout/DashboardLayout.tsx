@@ -230,7 +230,10 @@ export default function DashboardLayout() {
               </svg>
               New Event
             </Link>
-            <button className="relative p-2 rounded-[8px] text-[#475569] hover:bg-[#F8FAFC]">
+            <button
+              aria-label="Notifications"
+              className="relative p-2 rounded-[8px] text-[#475569] hover:bg-[#F8FAFC]"
+            >
               <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
               </svg>
@@ -238,6 +241,14 @@ export default function DashboardLayout() {
             </button>
           </div>
         </header>
+
+        {profile?.is_suspended && (
+          <div className="bg-[#FEF2F2] border-b border-[#FECACA] px-4 sm:px-6 py-2.5 text-sm text-[#B91C1C] flex items-center gap-2">
+            <span aria-hidden="true">⚠️</span>
+            Your account has been suspended by an administrator. You can't create or edit events
+            until this is resolved.
+          </div>
+        )}
 
         {/* Page content */}
         <main className="flex-1 overflow-y-auto">
