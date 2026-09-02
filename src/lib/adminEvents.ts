@@ -18,7 +18,7 @@ export type AdminEventRow = {
   archivedAt: string | null;
 };
 
-function computeStatus(event: {
+export function computeStatus(event: {
   is_published: boolean;
   archived_at: string | null;
   event_date: string;

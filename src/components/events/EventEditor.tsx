@@ -5,6 +5,7 @@ import { Input, Textarea, Select } from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { SAFE_DESTINATION_PROTOCOLS } from "@/lib/registration";
 import {
   BANNER_BUCKET,
   CATEGORY_OPTIONS,
@@ -90,10 +91,21 @@ export default function EventEditor({ eventId }: { eventId?: string }) {
   const [notice, setNotice] = useState<string | null>(null);
 
   const existing = useQuery({
-    queryKey: ["event", eventId],
-    enabled: isEdit,
+    queryKey: ["event", eventId, user?.id],
+    enabled: isEdit && Boolean(user),
     queryFn: async () => {
-      const { data, error: err } = await supabase.from("events").select("*").eq("id", eventId!).maybeSingle();
+      // Scoped to the current host explicitly, not just left to RLS: RLS's
+      // events_public_read policy would also happily return someone else's
+      // *published* event here (it's public data), which would otherwise
+      // load a foreign host's event into this "edit" form. Nothing could
+      // actually be saved (events_host_update still blocks that), but
+      // there's no reason to load it into an editable-looking form at all.
+      const { data, error: err } = await supabase
+        .from("events")
+        .select("*")
+        .eq("id", eventId!)
+        .eq("host_id", user!.id)
+        .maybeSingle();
       if (err) throw err;
       return data;
     },
@@ -159,7 +171,10 @@ export default function EventEditor({ eventId }: { eventId?: string }) {
     if (form.eventType === "physical" && !form.location.trim()) return "Venue address is required for physical events.";
     if (!form.destinationUrl.trim()) return "A redirect URL is required so attendees know where to go.";
     try {
-      new URL(form.destinationUrl.trim());
+      const parsed = new URL(form.destinationUrl.trim());
+      if (!SAFE_DESTINATION_PROTOCOLS.includes(parsed.protocol)) {
+        return "Redirect URL must start with https://, http://, mailto:, or tel:.";
+      }
     } catch {
       return "Redirect URL must be a full URL starting with https://";
     }

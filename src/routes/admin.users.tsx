@@ -88,7 +88,11 @@ function AdminUsers() {
           ].join(" ")}
         >
           <span>{banner.message}</span>
-          <button onClick={() => setBanner(null)} className="shrink-0 opacity-60 hover:opacity-100">
+          <button
+            onClick={() => setBanner(null)}
+            aria-label="Dismiss"
+            className="shrink-0 opacity-60 hover:opacity-100"
+          >
             ✕
           </button>
         </div>

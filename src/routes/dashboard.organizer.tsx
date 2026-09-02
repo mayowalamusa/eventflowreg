@@ -6,6 +6,7 @@ import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { validateImageFile } from "@/lib/imageUpload";
 import {
   LOGO_BUCKET,
   SOCIAL_KEYS,
@@ -143,8 +144,9 @@ function OrganizerProfileSettings() {
 
   const handleLogoChange = async (file: File | undefined) => {
     if (!file || !user) return;
-    if (file.size > 5 * 1024 * 1024) {
-      setStatus({ type: "error", msg: "Logo must be under 5MB." });
+    const validationError = validateImageFile(file);
+    if (validationError) {
+      setStatus({ type: "error", msg: validationError });
       return;
     }
     setUploading(true);

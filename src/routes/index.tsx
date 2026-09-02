@@ -52,22 +52,19 @@ const howItWorks = [
 
 const testimonials = [
   {
-    quote: "EventFlow helped us sell out our tech summit in 48 hours. The discovery reach is phenomenal — and the Google Sheets sync saved us hours every day.",
-    name: "Tunde Bakare",
-    role: "Founder, AI Nigeria",
-    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=64&h=64&fit=crop&auto=format",
+    quote:
+      "Every registration lands straight in your Google Sheet — no exports, no copy-pasting, no missed signups.",
+    title: "Real-time sync",
   },
   {
-    quote: "The community features changed everything. Our attendees now stay engaged months after the event. EventFlow is not just a registration tool — it's a growth engine.",
-    name: "Ngozi Adeyemi",
-    role: "Operations Lead, GrowthAfrica",
-    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=64&h=64&fit=crop&auto=format",
+    quote:
+      "Attendees get a confirmation the moment they register, with everything they need to know about the event.",
+    title: "Automatic confirmations",
   },
   {
-    quote: "We went from 200 to 2,000 attendees in one year. The automation and real-time sync made it possible to scale without hiring extra staff.",
-    name: "Amara Okafor",
-    role: "Community Manager, TechHub Lagos",
-    avatar: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=64&h=64&fit=crop&auto=format",
+    quote:
+      "Route registrants straight to your WhatsApp group, Zoom link, or wherever the event actually happens.",
+    title: "Flexible destinations",
   },
 ];
 
@@ -371,29 +368,21 @@ function HomePage() {
         </div>
       </section>
 
-      {/* ── Testimonials ─────────────────────────────────────────────── */}
+      {/* ── Why EventFlow ────────────────────────────────────────────── */}
       <section className="py-20 bg-[#F8FAFC]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-12">
-            <p className="text-xs font-semibold text-[#4F46E5] uppercase tracking-wider mb-2">Loved by organisers</p>
-            <h2 className="text-3xl font-bold text-[#0F172A]">What our hosts say</h2>
+            <p className="text-xs font-semibold text-[#4F46E5] uppercase tracking-wider mb-2">Built for real events</p>
+            <h2 className="text-3xl font-bold text-[#0F172A]">What EventFlow actually does</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {testimonials.map((t) => (
-              <div key={t.name} className="bg-white rounded-[16px] border border-[#E2E8F0] p-6 hover:shadow-md transition-shadow">
-                <div className="flex gap-1 mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <span key={i} className="text-[#F59E0B] text-sm">★</span>
-                  ))}
-                </div>
-                <p className="text-[#475569] text-sm leading-relaxed mb-5">"{t.quote}"</p>
-                <div className="flex items-center gap-3">
-                  <img src={t.avatar} alt={t.name} className="size-10 rounded-full object-cover" />
-                  <div>
-                    <p className="text-sm font-semibold text-[#0F172A]">{t.name}</p>
-                    <p className="text-xs text-[#94A3B8]">{t.role}</p>
-                  </div>
-                </div>
+              <div
+                key={t.title}
+                className="bg-white rounded-[16px] border border-[#E2E8F0] p-6 hover:shadow-md transition-shadow"
+              >
+                <p className="text-sm font-semibold text-[#4F46E5] mb-3">{t.title}</p>
+                <p className="text-[#475569] text-sm leading-relaxed">{t.quote}</p>
               </div>
             ))}
           </div>
@@ -405,7 +394,7 @@ function HomePage() {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <h2 className="text-4xl font-bold text-white mb-4">Ready to host smarter events?</h2>
           <p className="text-indigo-200 text-lg mb-8 leading-relaxed">
-            Join 12,000+ event organisers across Africa who use EventFlow to create, grow, and stay connected.
+            Create your first event and see registrations sync in real time.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button
