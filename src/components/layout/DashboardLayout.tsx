@@ -105,13 +105,15 @@ export default function DashboardLayout() {
       {/* Sidebar backdrop (mobile) */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/30 z-30 md:hidden"
+          className="fixed inset-0 bg-black/30 z-30 md:hidden ef-fade-in"
+          aria-hidden="true"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar */}
       <aside
+        aria-label="Dashboard navigation"
         className={[
           "fixed md:sticky top-0 left-0 h-screen w-60 bg-white border-r border-[#E2E8F0] flex flex-col z-40 transition-transform duration-200",
           sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0",
@@ -209,9 +211,11 @@ export default function DashboardLayout() {
           <div className="flex items-center gap-3">
             <button
               className="md:hidden p-2 rounded-[8px] text-[#475569] hover:bg-[#F8FAFC]"
+              aria-label="Open navigation menu"
+              aria-expanded={sidebarOpen}
               onClick={() => setSidebarOpen(true)}
             >
-              <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg aria-hidden="true" className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
@@ -225,7 +229,7 @@ export default function DashboardLayout() {
               to="/dashboard/events/new"
               className="inline-flex items-center gap-1.5 bg-[#4F46E5] hover:bg-[#4338CA] text-white text-sm font-medium px-3 py-2 rounded-[8px] transition-colors"
             >
-              <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg aria-hidden="true" className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
               </svg>
               New Event
@@ -234,7 +238,7 @@ export default function DashboardLayout() {
               aria-label="Notifications"
               className="relative p-2 rounded-[8px] text-[#475569] hover:bg-[#F8FAFC]"
             >
-              <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+              <svg aria-hidden="true" className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
               </svg>
               <span className="absolute top-1.5 right-1.5 size-2 rounded-full bg-[#EF4444]" />
