@@ -108,7 +108,7 @@ function AccountSettingsPage() {
             {/* Avatar */}
             <div className="flex items-center gap-5">
               {avatarUrl ? (
-                <img
+                <img loading="lazy" decoding="async"
                   src={avatarUrl}
                   alt={fullName || "Avatar"}
                   className="size-20 rounded-full object-cover"

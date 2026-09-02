@@ -136,7 +136,7 @@ function DashboardHome() {
                 recentEvents.map((event) => (
                   <div key={event.id} className="flex items-center gap-4 px-5 py-3.5 hover:bg-[#F8FAFC] transition-colors">
                     {event.banner_url ? (
-                      <img src={event.banner_url} alt="" className="size-10 rounded-[8px] object-cover shrink-0 bg-[#EEF2FF]" />
+                      <img loading="lazy" decoding="async" src={event.banner_url} alt="" className="size-10 rounded-[8px] object-cover shrink-0 bg-[#EEF2FF]" />
                     ) : (
                       <div className="size-10 rounded-[8px] bg-[#EEF2FF] shrink-0" />
                     )}

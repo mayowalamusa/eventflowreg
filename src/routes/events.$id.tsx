@@ -101,7 +101,7 @@ function EventDetailPage() {
 
       {/* Banner */}
       <div className="relative h-72 sm:h-96 overflow-hidden bg-[#EEF2FF]">
-        <img src={bannerOrFallback(event)} alt={event.title} className="w-full h-full object-cover" />
+        <img loading="lazy" decoding="async" src={bannerOrFallback(event)} alt={event.title} className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 max-w-7xl mx-auto px-4 sm:px-6 pb-8">
           <div className="flex gap-2 mb-3 flex-wrap">

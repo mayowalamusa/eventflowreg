@@ -178,7 +178,7 @@ export default function DashboardLayout() {
         <div className="p-4 border-t border-[#E2E8F0] shrink-0">
           <div className="flex items-center gap-3">
             {avatarUrl ? (
-              <img src={avatarUrl} alt={displayName} className="size-8 rounded-full object-cover" />
+              <img loading="lazy" decoding="async" src={avatarUrl} alt={displayName} className="size-8 rounded-full object-cover" />
             ) : (
               <div className="size-8 rounded-full bg-[#EEF2FF] text-[#4F46E5] text-xs font-bold flex items-center justify-center shrink-0">
                 {displayName.slice(0, 2).toUpperCase()}

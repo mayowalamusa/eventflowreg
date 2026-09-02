@@ -128,7 +128,7 @@ function RegistrationSuccessPage() {
 
           {/* Event summary card */}
           <div className="bg-white rounded-[16px] border border-[#E2E8F0] overflow-hidden mb-8 text-left">
-            <img src={bannerOrFallback(event)} alt={event.title} className="w-full h-36 object-cover" />
+            <img loading="lazy" decoding="async" src={bannerOrFallback(event)} alt={event.title} className="w-full h-36 object-cover" />
             <div className="p-5 flex flex-col gap-2">
               <p className="font-semibold text-[#0F172A]">{event.title}</p>
               <p className="text-sm text-[#64748B]">

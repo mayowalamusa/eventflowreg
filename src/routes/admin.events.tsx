@@ -152,7 +152,7 @@ function AdminEvents() {
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-3">
                         {event.bannerUrl ? (
-                          <img
+                          <img loading="lazy" decoding="async"
                             src={event.bannerUrl}
                             alt=""
                             className="size-10 rounded-[8px] object-cover bg-[#EEF2FF] shrink-0"
