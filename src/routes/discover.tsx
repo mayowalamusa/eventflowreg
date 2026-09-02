@@ -7,6 +7,9 @@ import Footer from "@/components/layout/Footer";
 import EventCard from "@/components/events/EventCard";
 import { Input } from "@/components/ui/Input";
 import { fetchPublicEvents, isFree } from "@/lib/publicEvents";
+import { SkeletonCard } from "@/components/ui/Skeleton";
+import EmptyState from "@/components/ui/EmptyState";
+import ErrorState from "@/components/ui/ErrorState";
 
 const locationTypes = ["All", "In-Person", "Online"];
 const priceTypes = ["All", "Free", "Paid"];
@@ -18,7 +21,7 @@ function DiscoveryPage() {
   const [locationType, setLocationType] = useState("All");
   const [priceType, setPriceType] = useState("All");
 
-  const { data: events = [], isLoading } = useQuery({
+  const { data: events = [], isLoading, isError, refetch } = useQuery({
     queryKey: ["public-events"],
     queryFn: () => fetchPublicEvents(200),
   });
@@ -84,6 +87,7 @@ function DiscoveryPage() {
                 <button
                   key={t}
                   onClick={() => setLocationType(t)}
+                  aria-pressed={locationType === t}
                   className={[
                     "px-3 py-2 rounded-[8px] text-sm font-medium border transition-all",
                     locationType === t
@@ -100,6 +104,7 @@ function DiscoveryPage() {
                 <button
                   key={t}
                   onClick={() => setPriceType(t)}
+                  aria-pressed={priceType === t}
                   className={[
                     "px-3 py-2 rounded-[8px] text-sm font-medium border transition-all",
                     priceType === t
@@ -118,7 +123,7 @@ function DiscoveryPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full">
         <div className="flex gap-8">
           {/* Sidebar filters (desktop) */}
-          <aside className="hidden lg:block w-52 shrink-0">
+          <aside className="hidden lg:block w-52 shrink-0" aria-label="Event filters">
             <div className="bg-white rounded-[14px] border border-[#E2E8F0] p-4 sticky top-24">
               <p className="text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-3">Category</p>
               <div className="flex flex-col gap-0.5">
@@ -126,6 +131,7 @@ function DiscoveryPage() {
                   <button
                     key={cat}
                     onClick={() => setActiveCategory(cat)}
+                    aria-pressed={activeCategory === cat}
                     className={[
                       "flex items-center justify-between px-3 py-2 rounded-[8px] text-sm font-medium text-left transition-all",
                       activeCategory === cat
@@ -153,6 +159,7 @@ function DiscoveryPage() {
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
+                    aria-pressed={activeCategory === cat}
                   className={[
                     "px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap border transition-all shrink-0",
                     activeCategory === cat
@@ -166,24 +173,32 @@ function DiscoveryPage() {
             </div>
 
             <div className="flex items-center justify-between mb-5">
-              <p className="text-sm text-[#64748B]">
+              <p className="text-sm text-[#64748B]" aria-live="polite">
                 <span className="font-semibold text-[#0F172A]">{filtered.length}</span> events found
               </p>
             </div>
 
             {isLoading ? (
-              <div className="text-center py-24 text-sm text-[#64748B]">Loading events…</div>
-            ) : filtered.length === 0 ? (
-
-              <div className="text-center py-24">
-                <div className="text-5xl mb-4">🔍</div>
-                <h3 className="text-lg font-semibold text-[#0F172A] mb-2">No events found</h3>
-                <p className="text-[#64748B] text-sm">Try adjusting your search or filters.</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5" aria-busy="true" aria-live="polite">
+                <span className="sr-only">Loading events</span>
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <SkeletonCard key={i} />
+                ))}
               </div>
+            ) : isError ? (
+              <ErrorState message="We couldn't load events right now." onRetry={() => refetch()} />
+            ) : filtered.length === 0 ? (
+              <EmptyState
+                icon="🔍"
+                title="No events found"
+                description="Try adjusting your search or filters to see more events."
+              />
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
-                {filtered.map((event) => (
-                  <EventCard key={event.id} event={event} />
+                {filtered.map((event, i) => (
+                  <div key={event.id} className="ef-fade-in" style={{ animationDelay: `${Math.min(i, 8) * 40}ms` }}>
+                    <EventCard event={event} />
+                  </div>
                 ))}
               </div>
             )}
