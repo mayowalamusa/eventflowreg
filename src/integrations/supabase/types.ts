@@ -751,6 +751,10 @@ export type Database = {
         Returns: boolean
       }
       is_suspended: { Args: { _user_id: string }; Returns: boolean }
+      organizer_follower_count: {
+        Args: { _profile_id: string }
+        Returns: number
+      }
     }
     Enums: {
       app_role: "admin" | "host"
