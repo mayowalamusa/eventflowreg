@@ -2,7 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Link } from "@/lib/nav";
 import StatCard from "@/components/ui/StatCard";
 import Badge from "@/components/ui/Badge";
-import { formatDate } from "@/data/mockData";
+import { formatDate, timeAgo } from "@/lib/format";
+import { SkeletonRows } from "@/components/ui/Skeleton";
 import { useAuth } from "@/hooks/useAuth";
 import { useDashboardData } from "@/hooks/useDashboardData";
 
@@ -15,17 +16,6 @@ const quickActions = [
   { label: "Sync to Sheets", icon: "📊", to: "/dashboard/sheets", accent: "#F59E0B", bg: "#FFFBEB" },
   { label: "Account Settings", icon: "⚙️", to: "/dashboard/settings", accent: "#64748B", bg: "#F8FAFC" },
 ];
-
-function timeAgo(iso: string) {
-  const diff = Date.now() - new Date(iso).getTime();
-  const mins = Math.floor(diff / 60000);
-  if (mins < 1) return "just now";
-  if (mins < 60) return `${mins} min ago`;
-  const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `${hrs} hr ago`;
-  const days = Math.floor(hrs / 24);
-  return `${days} day${days > 1 ? "s" : ""} ago`;
-}
 
 function EmptyRow({ label }: { label: string }) {
   return <div className="px-5 py-6 text-sm text-[#94A3B8] text-center">{label}</div>;
@@ -50,9 +40,9 @@ function DashboardHome() {
   const activity = data.registrations.slice(0, 5);
 
   return (
-    <div className="p-6 flex flex-col gap-6">
+    <div className="p-4 sm:p-6 flex flex-col gap-6 ef-fade-in">
       {/* Welcome */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-2xl font-bold text-[#0F172A]">Welcome back, {firstName} 👋</h2>
           <p className="text-[#64748B] text-sm mt-0.5">Here's what's happening with your events today.</p>
@@ -130,13 +120,15 @@ function DashboardHome() {
               <Link to="/dashboard/events" className="text-xs text-[#4F46E5] font-medium hover:underline">View all →</Link>
             </div>
             <div className="divide-y divide-[#F1F5F9]">
-              {recentEvents.length === 0 ? (
-                <EmptyRow label={isLoading ? "Loading events…" : "No events yet — create your first event."} />
+              {isLoading ? (
+                <SkeletonRows rows={4} />
+              ) : recentEvents.length === 0 ? (
+                <EmptyRow label="No events yet — create your first event." />
               ) : (
                 recentEvents.map((event) => (
                   <div key={event.id} className="flex items-center gap-4 px-5 py-3.5 hover:bg-[#F8FAFC] transition-colors">
                     {event.banner_url ? (
-                      <img src={event.banner_url} alt="" className="size-10 rounded-[8px] object-cover shrink-0 bg-[#EEF2FF]" />
+                      <img loading="lazy" decoding="async" src={event.banner_url} alt="" className="size-10 rounded-[8px] object-cover shrink-0 bg-[#EEF2FF]" />
                     ) : (
                       <div className="size-10 rounded-[8px] bg-[#EEF2FF] shrink-0" />
                     )}
@@ -163,8 +155,10 @@ function DashboardHome() {
               <h3 className="font-semibold text-[#0F172A]">Recent Activity</h3>
             </div>
             <div className="divide-y divide-[#F1F5F9]">
-              {activity.length === 0 ? (
-                <EmptyRow label={isLoading ? "Loading activity…" : "No activity yet."} />
+              {isLoading ? (
+                <SkeletonRows rows={3} />
+              ) : activity.length === 0 ? (
+                <EmptyRow label="No activity yet." />
               ) : (
                 activity.map((item) => (
                   <div key={item.id} className="flex items-start gap-3 px-5 py-3.5">
@@ -192,8 +186,10 @@ function DashboardHome() {
               <Link to="/dashboard/events" className="text-xs text-[#4F46E5] font-medium hover:underline">All →</Link>
             </div>
             <div className="divide-y divide-[#F1F5F9]">
-              {upcomingEvents.length === 0 ? (
-                <EmptyRow label={isLoading ? "Loading…" : "No upcoming events."} />
+              {isLoading ? (
+                <SkeletonRows rows={3} />
+              ) : upcomingEvents.length === 0 ? (
+                <EmptyRow label="No upcoming events." />
               ) : (
                 upcomingEvents.map((event) => (
                   <div key={event.id} className="flex items-center gap-3 px-5 py-3 hover:bg-[#F8FAFC] transition-colors">
@@ -222,8 +218,10 @@ function DashboardHome() {
               <Link to="/dashboard/registrations" className="text-xs text-[#4F46E5] font-medium hover:underline">All →</Link>
             </div>
             <div className="divide-y divide-[#F1F5F9]">
-              {recentRegs.length === 0 ? (
-                <EmptyRow label={isLoading ? "Loading…" : "No registrations yet."} />
+              {isLoading ? (
+                <SkeletonRows rows={3} />
+              ) : recentRegs.length === 0 ? (
+                <EmptyRow label="No registrations yet." />
               ) : (
                 recentRegs.map((reg) => (
                   <div key={reg.id} className="flex items-center gap-3 px-5 py-3 hover:bg-[#F8FAFC] transition-colors">

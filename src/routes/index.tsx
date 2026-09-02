@@ -143,7 +143,7 @@ function HomePage() {
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     leftIcon={
-                      <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <svg aria-hidden="true" className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <circle cx="11" cy="11" r="8" />
                         <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35" />
                       </svg>
@@ -184,7 +184,7 @@ function HomePage() {
             {/* Hero visual */}
             <div className="relative lg:block hidden">
               <div className="relative rounded-[20px] overflow-hidden shadow-2xl">
-                <img
+                <img loading="lazy" decoding="async"
                   src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=700&h=480&fit=crop&auto=format"
                   alt="EventFlow platform — organizer managing community"
                   className="w-full object-cover"

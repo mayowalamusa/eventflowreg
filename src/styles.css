@@ -63,3 +63,61 @@ body {
   background: #cbd5e1;
   border-radius: 99px;
 }
+
+/* ---------- Motion & polish utilities ---------- */
+@keyframes ef-fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes ef-shimmer {
+  100% { background-position: -200% 0; }
+}
+
+.ef-fade-in {
+  animation: ef-fade-in 0.35s ease-out both;
+}
+
+.ef-skeleton {
+  background: linear-gradient(90deg, #eef2f6 0%, #f8fafc 50%, #eef2f6 100%);
+  background-size: 200% 100%;
+  background-position: 200% 0;
+  animation: ef-shimmer 1.4s linear infinite;
+}
+
+/* Visible keyboard focus everywhere */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.ef-skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+}
+.ef-skip-link:focus {
+  left: 12px;
+  top: 12px;
+  padding: 8px 14px;
+  background: #ffffff;
+  color: #4f46e5;
+  border: 1px solid #4f46e5;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+img {
+  max-width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

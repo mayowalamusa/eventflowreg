@@ -285,7 +285,7 @@ function RegistrationPage() {
           {/* ── Left: Event summary + benefits ──────────────────── */}
           <div className="lg:col-span-2 flex flex-col gap-4">
             <div className="bg-white rounded-[16px] border border-[#E2E8F0] overflow-hidden sticky top-24">
-              <img src={bannerOrFallback(event)} alt={event.title} className="w-full h-40 object-cover" />
+              <img loading="lazy" decoding="async" src={bannerOrFallback(event)} alt={event.title} className="w-full h-40 object-cover" />
               <div className="p-5">
                 <Badge variant="primary" className="mb-3">{event.category || "Other"}</Badge>
                 <h2 className="font-bold text-[#0F172A] text-lg leading-snug mb-3">{event.title}</h2>

@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import EmptyState from "@/components/ui/EmptyState";
+import { SkeletonRows } from "@/components/ui/Skeleton";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@/lib/nav";
@@ -93,7 +95,7 @@ function MyEventsPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             leftIcon={
-              <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg aria-hidden="true" className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <circle cx="11" cy="11" r="8" />
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35" />
               </svg>
@@ -183,12 +185,18 @@ function MyEventsPage() {
           </table>
         </div>
         {!isLoading && filtered.length === 0 && (
-          <div className="text-center py-16">
-            <div className="text-4xl mb-3">📅</div>
-            <p className="text-[#64748B] text-sm">No events found</p>
+          <EmptyState
+            icon="📅"
+            title="No events found"
+            description="Create your first event or adjust your filters to see results."
+          />
+        )}
+        {isLoading && (
+          <div aria-busy="true" aria-live="polite">
+            <span className="sr-only">Loading events</span>
+            <SkeletonRows rows={5} />
           </div>
         )}
-        {isLoading && <div className="text-center py-16 text-sm text-[#64748B]">Loading events…</div>}
       </div>
     </div>
   );

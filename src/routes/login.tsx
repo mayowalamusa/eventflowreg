@@ -62,7 +62,7 @@ function LoginPage() {
         />
         <Link to="/" className="relative flex items-center gap-2">
           <div className="size-8 rounded-[8px] bg-[#4F46E5] flex items-center justify-center">
-            <svg className="size-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <svg aria-hidden="true" className="size-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
           </div>
@@ -98,7 +98,7 @@ function LoginPage() {
         <div className="w-full max-w-sm">
           <Link to="/" className="lg:hidden flex items-center gap-2 justify-center mb-8">
             <div className="size-8 rounded-[8px] bg-[#4F46E5] flex items-center justify-center">
-              <svg className="size-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <svg aria-hidden="true" className="size-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
             </div>
@@ -120,7 +120,7 @@ function LoginPage() {
             disabled={googleLoading}
             className="w-full flex items-center justify-center gap-3 border border-[#E2E8F0] rounded-[8px] py-2.5 text-sm font-medium text-[#0F172A] hover:bg-[#F8FAFC] transition-colors mb-5 disabled:opacity-60"
           >
-            <svg className="size-4" viewBox="0 0 24 24">
+            <svg aria-hidden="true" className="size-4" viewBox="0 0 24 24">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
               <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
               <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
