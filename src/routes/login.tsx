@@ -183,6 +183,9 @@ function LoginPage() {
 }
 
 export const Route = createFileRoute("/login")({
+  validateSearch: (s: Record<string, unknown>) => ({
+    next: typeof s['next'] === "string" ? s['next'] : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Log in — EventFlow" },
