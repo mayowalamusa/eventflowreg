@@ -8,11 +8,20 @@ import { lovable } from "@/integrations/lovable/index";
 import { resolveHomeRoute } from "@/hooks/useAuth";
 import { toast } from "sonner";
 
+/** Only same-origin relative paths may be used as a post-login destination. */
+function safeNext(next: string | undefined): string | null {
+  if (!next || !next.startsWith("/") || next.startsWith("//")) return null;
+  return next;
+}
+
 function LoginPage() {
   const navigate = useNavigate();
+  const { next } = Route.useSearch();
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+
+  const redirectTo = safeNext(next);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,7 +40,7 @@ function LoginPage() {
       toast.error(error.message);
       return;
     }
-    const dest = await resolveHomeRoute(data.user.id);
+    const dest = redirectTo ?? (await resolveHomeRoute(data.user.id));
     setLoading(false);
     navigate(dest);
   };
@@ -39,7 +48,7 @@ function LoginPage() {
   const handleGoogle = async () => {
     setGoogleLoading(true);
     const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
+      redirect_uri: redirectTo ? `${window.location.origin}${redirectTo}` : window.location.origin,
     });
     if (result.error) {
       setGoogleLoading(false);
@@ -49,6 +58,10 @@ function LoginPage() {
     if (result.redirected) return;
     const { data } = await supabase.auth.getUser();
     setGoogleLoading(false);
+    if (redirectTo) {
+      navigate(redirectTo);
+      return;
+    }
     navigate(data.user ? await resolveHomeRoute(data.user.id) : "/dashboard");
   };
 
