@@ -137,8 +137,13 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-        <Outlet />
+        <a href="#main-content" className="ef-skip-link">
+          Skip to main content
+        </a>
+        <div id="main-content">
+          {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+          <Outlet />
+        </div>
       </AuthProvider>
       <Toaster richColors position="top-center" />
     </QueryClientProvider>

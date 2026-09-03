@@ -198,7 +198,7 @@ function OrganizerProfileSettings() {
         <div className="flex items-center gap-5">
           <div className="size-20 rounded-[14px] overflow-hidden bg-[#EEF2FF] flex items-center justify-center shrink-0">
             {logoPreview ? (
-              <img src={logoPreview} alt="Organization logo" className="w-full h-full object-cover" />
+              <img loading="lazy" decoding="async" src={logoPreview} alt="Organization logo" className="w-full h-full object-cover" />
             ) : (
               <span className="text-2xl">🏢</span>
             )}

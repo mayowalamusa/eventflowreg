@@ -27,7 +27,7 @@ async function fetchOrganizer(idOrHandle: string) {
   if (error) throw error;
   if (!profile) return null;
 
-  const [{ data: eventRows }, { count: followers }] = await Promise.all([
+  const [{ data: eventRows }, { data: followers }] = await Promise.all([
     supabase
       .from("events")
       .select("id, slug, title, description, banner_url, event_date, event_time, event_type, location, category")
@@ -35,13 +35,12 @@ async function fetchOrganizer(idOrHandle: string) {
       .eq("is_published", true)
       .eq("visibility", "public")
       .order("event_date", { ascending: true }),
-    supabase
-      .from("organizer_followers")
-      .select("id", { count: "exact", head: true })
-      .eq("organizer_profile_id", profile.id),
+    // Follower identities are private; the public page only gets an aggregate count.
+    supabase.rpc("organizer_follower_count", { _profile_id: profile.id }),
   ]);
 
   return { profile, events: eventRows ?? [], followers: followers ?? 0 };
+
 }
 
 function OrganizerProfilePage() {
@@ -149,7 +148,7 @@ function OrganizerProfilePage() {
           <div className="flex flex-col sm:flex-row items-start sm:items-end gap-5 -mt-14 pb-6">
             <div className="size-24 rounded-[16px] border-4 border-white shadow-lg overflow-hidden bg-[#EEF2FF] shrink-0 flex items-center justify-center">
               {logo ? (
-                <img src={logo} alt={profile.display_name} className="w-full h-full object-cover" />
+                <img loading="lazy" decoding="async" src={logo} alt={profile.display_name} className="w-full h-full object-cover" />
               ) : (
                 <span className="text-3xl">🏢</span>
               )}
@@ -238,7 +237,7 @@ function OrganizerProfilePage() {
                       onClick={() => navigate(`/events/${event.slug}`)}
                     >
                       {event.banner_url ? (
-                        <img src={event.banner_url} alt="" className="size-12 rounded-[10px] object-cover bg-[#EEF2FF] shrink-0" />
+                        <img loading="lazy" decoding="async" src={event.banner_url} alt="" className="size-12 rounded-[10px] object-cover bg-[#EEF2FF] shrink-0" />
                       ) : (
                         <div className="size-12 rounded-[10px] bg-[#EEF2FF] shrink-0" />
                       )}
@@ -272,7 +271,7 @@ function OrganizerProfilePage() {
                       onClick={() => navigate(`/events/${event.slug}`)}
                     >
                       {event.banner_url ? (
-                        <img src={event.banner_url} alt="" className="size-12 rounded-[10px] object-cover bg-[#EEF2FF] shrink-0" />
+                        <img loading="lazy" decoding="async" src={event.banner_url} alt="" className="size-12 rounded-[10px] object-cover bg-[#EEF2FF] shrink-0" />
                       ) : (
                         <div className="size-12 rounded-[10px] bg-[#EEF2FF] shrink-0" />
                       )}

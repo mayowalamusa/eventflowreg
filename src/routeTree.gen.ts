@@ -15,9 +15,11 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as McpRouteImport } from './routes/mcp'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as VerifyEmailRouteImport } from './routes/verify-email'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as AdminEventsRouteImport } from './routes/admin.events'
@@ -29,6 +31,7 @@ import { Route as DashboardSettingsRouteImport } from './routes/dashboard.settin
 import { Route as DashboardSheetsRouteImport } from './routes/dashboard.sheets'
 import { Route as EventsIdRouteImport } from './routes/events.$id'
 import { Route as OrganizersIdRouteImport } from './routes/organizers.$id'
+import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as DashboardEventsIndexRouteImport } from './routes/dashboard.events.index'
 import { Route as DashboardEventsNewRouteImport } from './routes/dashboard.events.new'
 import { Route as EventsIdRegisterRouteImport } from './routes/events.$id.register'
@@ -66,6 +69,11 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
@@ -81,6 +89,12 @@ const VerifyEmailRoute = VerifyEmailRouteImport.update({
   path: '/verify-email',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -136,6 +150,11 @@ const OrganizersIdRoute = OrganizersIdRouteImport.update({
   path: '/organizers/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardEventsIndexRoute = DashboardEventsIndexRouteImport.update({
   id: '/events/',
   path: '/events/',
@@ -174,9 +193,11 @@ export interface FileRoutesByFullPath {
   '/discover': typeof DiscoverRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/mcp': typeof McpRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/verify-email': typeof VerifyEmailRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/events': typeof AdminEventsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -188,6 +209,7 @@ export interface FileRoutesByFullPath {
   '/organizers/$id': typeof OrganizersIdRoute
   '/admin/': typeof AdminIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/dashboard/events/new': typeof DashboardEventsNewRoute
   '/events/$id/register': typeof EventsIdRegisterRoute
   '/events/$id/success': typeof EventsIdSuccessRoute
@@ -200,9 +222,11 @@ export interface FileRoutesByTo {
   '/discover': typeof DiscoverRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/mcp': typeof McpRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/verify-email': typeof VerifyEmailRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/events': typeof AdminEventsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -214,6 +238,7 @@ export interface FileRoutesByTo {
   '/organizers/$id': typeof OrganizersIdRoute
   '/admin': typeof AdminIndexRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/dashboard/events/new': typeof DashboardEventsNewRoute
   '/events/$id/register': typeof EventsIdRegisterRoute
   '/events/$id/success': typeof EventsIdSuccessRoute
@@ -229,9 +254,11 @@ export interface FileRoutesById {
   '/discover': typeof DiscoverRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/mcp': typeof McpRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/verify-email': typeof VerifyEmailRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/events': typeof AdminEventsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -243,6 +270,7 @@ export interface FileRoutesById {
   '/organizers/$id': typeof OrganizersIdRoute
   '/admin/': typeof AdminIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/dashboard/events/new': typeof DashboardEventsNewRoute
   '/events/$id/register': typeof EventsIdRegisterRoute
   '/events/$id/success': typeof EventsIdSuccessRoute
@@ -259,9 +287,11 @@ export interface FileRouteTypes {
     | '/discover'
     | '/forgot-password'
     | '/login'
+    | '/mcp'
     | '/reset-password'
     | '/signup'
     | '/verify-email'
+    | '/.well-known/oauth-protected-resource'
     | '/admin/analytics'
     | '/admin/events'
     | '/admin/users'
@@ -273,6 +303,7 @@ export interface FileRouteTypes {
     | '/organizers/$id'
     | '/admin/'
     | '/dashboard/'
+    | '/.lovable/oauth/consent'
     | '/dashboard/events/new'
     | '/events/$id/register'
     | '/events/$id/success'
@@ -285,9 +316,11 @@ export interface FileRouteTypes {
     | '/discover'
     | '/forgot-password'
     | '/login'
+    | '/mcp'
     | '/reset-password'
     | '/signup'
     | '/verify-email'
+    | '/.well-known/oauth-protected-resource'
     | '/admin/analytics'
     | '/admin/events'
     | '/admin/users'
@@ -299,6 +332,7 @@ export interface FileRouteTypes {
     | '/organizers/$id'
     | '/admin'
     | '/dashboard'
+    | '/.lovable/oauth/consent'
     | '/dashboard/events/new'
     | '/events/$id/register'
     | '/events/$id/success'
@@ -313,9 +347,11 @@ export interface FileRouteTypes {
     | '/discover'
     | '/forgot-password'
     | '/login'
+    | '/mcp'
     | '/reset-password'
     | '/signup'
     | '/verify-email'
+    | '/.well-known/oauth-protected-resource'
     | '/admin/analytics'
     | '/admin/events'
     | '/admin/users'
@@ -327,6 +363,7 @@ export interface FileRouteTypes {
     | '/organizers/$id'
     | '/admin/'
     | '/dashboard/'
+    | '/.lovable/oauth/consent'
     | '/dashboard/events/new'
     | '/events/$id/register'
     | '/events/$id/success'
@@ -342,11 +379,14 @@ export interface RootRouteChildren {
   DiscoverRoute: typeof DiscoverRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
+  McpRoute: typeof McpRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SignupRoute: typeof SignupRoute
   VerifyEmailRoute: typeof VerifyEmailRoute
+  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   EventsIdRoute: typeof EventsIdRouteWithChildren
   OrganizersIdRoute: typeof OrganizersIdRoute
+  DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -393,6 +433,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reset-password': {
       id: '/reset-password'
       path: '/reset-password'
@@ -412,6 +459,13 @@ declare module '@tanstack/react-router' {
       path: '/verify-email'
       fullPath: '/verify-email'
       preLoaderRoute: typeof VerifyEmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -489,6 +543,13 @@ declare module '@tanstack/react-router' {
       path: '/organizers/$id'
       fullPath: '/organizers/$id'
       preLoaderRoute: typeof OrganizersIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard/events/': {
@@ -601,11 +662,15 @@ const rootRouteChildren: RootRouteChildren = {
   DiscoverRoute: DiscoverRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
+  McpRoute: McpRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SignupRoute: SignupRoute,
   VerifyEmailRoute: VerifyEmailRoute,
+  Char91DotwellKnownChar93OauthProtectedResourceRoute:
+    Char91DotwellKnownChar93OauthProtectedResourceRoute,
   EventsIdRoute: EventsIdRouteWithChildren,
   OrganizersIdRoute: OrganizersIdRoute,
+  DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

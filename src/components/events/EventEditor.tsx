@@ -360,7 +360,7 @@ export default function EventEditor({ eventId }: { eventId?: string }) {
               <div className="flex items-center gap-4">
                 <div className="w-40 h-24 rounded-[10px] bg-[#EEF2FF] border border-[#E2E8F0] overflow-hidden flex items-center justify-center shrink-0">
                   {bannerPreview ? (
-                    <img src={bannerPreview} alt="Event banner preview" className="w-full h-full object-cover" />
+                    <img loading="lazy" decoding="async" src={bannerPreview} alt="Event banner preview" className="w-full h-full object-cover" />
                   ) : (
                     <span className="text-2xl">🖼️</span>
                   )}
