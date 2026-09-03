@@ -42,7 +42,8 @@ function Consent() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const clientName = details?.client?.name ?? "this app";
+  const clientName =
+    details && "client" in details ? (details.client?.name ?? "this app") : "this app";
 
   async function decide(approve: boolean) {
     setBusy(true);
