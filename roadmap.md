@@ -13,6 +13,15 @@
 - Admin: dashboard, users, events, analytics, suspend users, archive events
 - Dashboard registrations table: search, filters, pagination, realtime
 
+## Platform sync (done)
+- Applied storage upload limits (5MB) to event-banners and organizer-logos buckets
+- Deployed edge functions: google-oauth-start, google-oauth-callback, google-sheets
+
+## Agent integrations / MCP (done)
+- MCP server at /mcp via @lovable.dev/mcp-js, secured with Supabase OAuth 2.1
+- Tools: list_events, get_event, list_registrations, event_stats
+- OAuth consent route + login `next` redirect preservation
+
 ## In progress (this turn)
 - [ ] Google Sheets: choose existing spreadsheet by URL/ID
 - [ ] Google Sheets: instant auto-sync on new registration + automatic retry of failures
