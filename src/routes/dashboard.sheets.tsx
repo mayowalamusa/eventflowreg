@@ -41,9 +41,16 @@ function runStatusBadge(status: SyncRun["status"]) {
  * retry" — retrying won't fix a missing configuration. */
 function friendlyGoogleErrorMessage(err: unknown): string {
   const raw = err instanceof Error ? err.message : String(err ?? "");
-  const notFound = /not.?found|failed to (fetch|send)|network|404|edge function/i.test(raw);
-  if (notFound) {
-    return "Google Sheets isn't set up for this EventFlow project yet. Use CSV export below in the meantime.";
+  // Narrowed on purpose: this used to also match a generic "Edge Function"
+  // phrase, which meant a real, specific server error (now that the
+  // functions are actually deployed and their messages are correctly
+  // recovered — see lib/googleSheets.ts) could still get silently replaced
+  // with this "not set up yet" copy. Only genuine unreachable-endpoint
+  // signals should hit this fallback; anything else should show the real
+  // message so it's actually actionable.
+  const unreachable = /failed to (fetch|send a request)|network error|ERR_FAILED/i.test(raw);
+  if (unreachable) {
+    return "Couldn't reach Google Sheets. Check your connection and try again.";
   }
   return raw || "Something went wrong with Google Sheets.";
 }

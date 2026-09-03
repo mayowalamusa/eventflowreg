@@ -45,18 +45,23 @@ async function callGoogleSheets<T>(
     body: { action, ...extra },
   });
   if (error) {
-    // supabase-js surfaces non-2xx responses as `error`; try to recover the
-    // server's own message from the response body when possible.
+    // supabase-js surfaces non-2xx responses as `error` with a generic
+    // message; the server's real message lives in the response body. Parse
+    // it OUTSIDE the try/catch that's just guarding "was this JSON at
+    // all" — an earlier version threw the recovered message from inside
+    // that same try, which meant it was immediately caught by its own
+    // catch and silently discarded every time.
+    let message = error.message || "Something went wrong.";
     const context = (error as { context?: Response }).context;
     if (context) {
       try {
         const body = await context.clone().json();
-        throw new Error(body?.error || body?.message || error.message);
+        message = body?.error || body?.message || message;
       } catch {
-        /* fall through to generic error below */
+        /* response wasn't JSON — keep the generic message */
       }
     }
-    throw new Error(error.message || "Something went wrong.");
+    throw new Error(message);
   }
   return data as T;
 }
@@ -67,7 +72,17 @@ export async function startGoogleConnect(): Promise<void> {
     { body: {} },
   );
   if (error || !data?.url) {
-    throw new Error(data?.error || error?.message || "Could not start the Google connection.");
+    let message = error?.message || data?.error || "Could not start the Google connection.";
+    const context = (error as { context?: Response } | undefined)?.context;
+    if (context) {
+      try {
+        const body = await context.clone().json();
+        message = body?.error || body?.message || message;
+      } catch {
+        /* response wasn't JSON — keep whatever message we already have */
+      }
+    }
+    throw new Error(message);
   }
   window.location.href = data.url;
 }
