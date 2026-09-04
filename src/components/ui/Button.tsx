@@ -1,4 +1,5 @@
 import { type ReactNode, type ButtonHTMLAttributes } from "react";
+import { cn } from "@/lib/utils";
 
 type Variant = "primary" | "secondary" | "outline" | "ghost" | "danger";
 type Size = "sm" | "md" | "lg";
@@ -39,16 +40,14 @@ export default function Button({
     <button
       {...props}
       disabled={disabled || loading}
-      className={[
+      className={cn(
         "inline-flex items-center justify-center font-medium rounded-[8px] transition-all duration-150 cursor-pointer select-none",
         "disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4F46E5]",
         variantClasses[variant],
         sizeClasses[size],
         fullWidth ? "w-full" : "",
         className,
-      ]
-        .filter(Boolean)
-        .join(" ")}
+      )}
     >
       {loading && (
         <svg aria-hidden="true" className="animate-spin -ml-0.5 size-4" fill="none" viewBox="0 0 24 24">

@@ -258,7 +258,14 @@ Deno.serve(async (req: Request) => {
     return redirectTo(appUrl, { google: "error", message: "not_configured" });
   }
 
-  const redirectUri = `${new URL(req.url).origin}/functions/v1/google-oauth-callback`;
+  // Must match, byte-for-byte, the redirect_uri sent in the original
+  // authorization request (google-oauth-start) — Google's token endpoint
+  // rejects the exchange otherwise. Deriving both from the same SUPABASE_URL
+  // env var (via functionUrl()) guarantees that; req.url's origin reflects
+  // Supabase's internal/proxied request URL, which isn't reliably the same
+  // as the public URL Google was actually told about, and was the actual
+  // cause of the token exchange failing here.
+  const redirectUri = functionUrl("google-oauth-callback");
 
   const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
     method: "POST",

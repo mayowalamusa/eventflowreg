@@ -71,7 +71,7 @@ export default function EventCard({ event }: EventCardProps) {
           variant="outline"
           size="sm"
           fullWidth
-          onClick={() => navigate(`/events/${event.slug}`)}
+          onClick={() => navigate(`/events/${event.slug}/register`)}
           className="mt-1"
         >
           Register →

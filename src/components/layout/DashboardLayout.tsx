@@ -1,7 +1,18 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate, Outlet } from "@/lib/nav";
+import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
+import { fetchRecentActivity } from "@/lib/recentActivity";
+
+function timeAgo(iso: string): string {
+  const mins = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
+  if (mins < 1) return "Just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.round(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  return new Date(iso).toLocaleDateString(undefined, { month: "short", day: "numeric" });
+}
 
 
 const navItems = [
@@ -75,6 +86,27 @@ export default function DashboardLayout() {
   const { user, isAdmin, signOut } = useAuth();
   const { profile } = useProfile();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [activityOpen, setActivityOpen] = useState(false);
+  const activityRef = useRef<HTMLDivElement>(null);
+
+  const activityQuery = useQuery({
+    queryKey: ["dashboard", "recent-activity"],
+    queryFn: () => fetchRecentActivity(5),
+  });
+  const hasRecent = (activityQuery.data ?? []).some(
+    (item) => Date.now() - new Date(item.createdAt).getTime() < 24 * 60 * 60 * 1000,
+  );
+
+  useEffect(() => {
+    if (!activityOpen) return;
+    const onClickOutside = (e: MouseEvent) => {
+      if (activityRef.current && !activityRef.current.contains(e.target as Node)) {
+        setActivityOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onClickOutside);
+    return () => document.removeEventListener("mousedown", onClickOutside);
+  }, [activityOpen]);
 
   // profiles.full_name is the editable application identity (set via
   // Account Settings); user_metadata is only the signup-time snapshot from
@@ -234,15 +266,63 @@ export default function DashboardLayout() {
               </svg>
               New Event
             </Link>
-            <button
-              aria-label="Notifications"
-              className="relative p-2 rounded-[8px] text-[#475569] hover:bg-[#F8FAFC]"
-            >
-              <svg aria-hidden="true" className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-              </svg>
-              <span className="absolute top-1.5 right-1.5 size-2 rounded-full bg-[#EF4444]" />
-            </button>
+            <div className="relative" ref={activityRef}>
+              <button
+                aria-label="Recent activity"
+                onClick={() => setActivityOpen((v) => !v)}
+                className="relative p-2 rounded-[8px] text-[#475569] hover:bg-[#F8FAFC]"
+              >
+                <svg
+                  aria-hidden="true"
+                  className="size-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={1.8}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                  />
+                </svg>
+                {hasRecent && <span className="absolute top-1.5 right-1.5 size-2 rounded-full bg-[#EF4444]" />}
+              </button>
+
+              {activityOpen && (
+                <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-[12px] border border-[#E2E8F0] shadow-lg z-50 overflow-hidden">
+                  <div className="px-4 py-3 border-b border-[#F1F5F9]">
+                    <p className="text-sm font-semibold text-[#0F172A]">Recent Activity</p>
+                  </div>
+                  {activityQuery.isLoading ? (
+                    <p className="px-4 py-6 text-sm text-[#94A3B8] text-center">Loading…</p>
+                  ) : (activityQuery.data ?? []).length === 0 ? (
+                    <p className="px-4 py-6 text-sm text-[#94A3B8] text-center">
+                      No registrations yet. New sign-ups will show up here.
+                    </p>
+                  ) : (
+                    <ul className="max-h-80 overflow-y-auto">
+                      {activityQuery.data!.map((item) => (
+                        <li key={item.id} className="px-4 py-2.5 border-b border-[#F8FAFC] last:border-0">
+                          <p className="text-sm text-[#0F172A]">
+                            <span className="font-medium">{item.fullName}</span> registered for{" "}
+                            <span className="font-medium">{item.eventTitle}</span>
+                          </p>
+                          <p className="text-xs text-[#94A3B8] mt-0.5">{timeAgo(item.createdAt)}</p>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  <Link
+                    to="/dashboard/registrations"
+                    onClick={() => setActivityOpen(false)}
+                    className="block text-center text-sm text-[#4F46E5] font-medium py-2.5 border-t border-[#F1F5F9] hover:bg-[#F8FAFC]"
+                  >
+                    View all registrations
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
         </header>
 

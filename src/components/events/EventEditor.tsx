@@ -6,6 +6,7 @@ import Button from "@/components/ui/Button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { SAFE_DESTINATION_PROTOCOLS } from "@/lib/registration";
+import TagInput from "@/components/events/TagInput";
 import {
   BANNER_BUCKET,
   CATEGORY_OPTIONS,
@@ -409,12 +410,11 @@ export default function EventEditor({ eventId }: { eventId?: string }) {
               />
             </div>
 
-            <Input
+            <TagInput
               label="Tags"
               value={form.tags}
-              onChange={(e) => set("tags", e.target.value)}
-              placeholder="ai, startups, lagos"
-              hint="Comma separated — used for discovery and SEO"
+              onChange={(v) => set("tags", v)}
+              hint="Comma separated — used for discovery and SEO. Click a suggestion or keep typing."
             />
 
             <div className="grid sm:grid-cols-2 gap-4">

@@ -219,7 +219,7 @@ function EventDetailPage() {
               )}
 
 
-              <Button fullWidth size="lg" onClick={() => navigate(`/events/${event.id}/register`)}>
+              <Button fullWidth size="lg" onClick={() => navigate(`/events/${event.slug ?? event.id}/register`)}>
                 Register Now
               </Button>
               <p className="text-xs text-center text-[#94A3B8] mt-3">

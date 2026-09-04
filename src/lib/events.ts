@@ -139,6 +139,24 @@ export function parseTags(value: string): string[] {
   );
 }
 
+/** Real tags already used across published, non-archived events — not a
+ * fabricated "popular tags" list. Ranked by how often each tag is used, so
+ * suggestions actually reflect what's genuinely common on the platform and
+ * get more useful as more events are created. */
+export async function fetchTagSuggestions(): Promise<string[]> {
+  const { data, error } = await supabase.from("events").select("tags").is("archived_at", null);
+  if (error) throw error;
+  const counts = new Map<string, number>();
+  for (const row of data ?? []) {
+    for (const tag of row.tags ?? []) {
+      const key = tag.trim().toLowerCase();
+      if (!key) continue;
+      counts.set(key, (counts.get(key) ?? 0) + 1);
+    }
+  }
+  return [...counts.entries()].sort((a, b) => b[1] - a[1]).map(([tag]) => tag);
+}
+
 export function formatEventDate(date: string, time?: string | null): string {
   const d = new Date(`${date}T${(time || "00:00:00").slice(0, 8)}`);
   if (Number.isNaN(d.getTime())) return date;

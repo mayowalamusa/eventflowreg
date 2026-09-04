@@ -389,8 +389,87 @@ function HomePage() {
         </div>
       </section>
 
+      {/* ── About ────────────────────────────────────────────────────── */}
+      <section id="about" className="py-20 bg-white border-t border-[#E2E8F0]">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+          <p className="text-xs font-semibold text-[#4F46E5] uppercase tracking-wider mb-2">
+            About EventFlow
+          </p>
+          <h2 className="text-3xl font-bold text-[#0F172A] mb-5">
+            Built for hosts, not just events
+          </h2>
+          <p className="text-[#475569] leading-relaxed text-lg">
+            EventFlow started from a simple frustration: registration data scattered across forms,
+            spreadsheets, and inboxes, with no reliable way to keep it all in sync. We built a
+            platform where creating an event, collecting registrations, and getting that data into
+            the tools you already use — like Google Sheets — takes minutes, not manual
+            copy-pasting.
+          </p>
+          <p className="text-[#475569] leading-relaxed text-lg mt-4">
+            Every registration is backed by real-time data, automatic confirmation emails, and a
+            dashboard that actually reflects what's happening with your event — not a demo built on
+            fake numbers.
+          </p>
+        </div>
+      </section>
+
+      {/* ── Pricing ──────────────────────────────────────────────────── */}
+      <section id="pricing" className="py-20 bg-[#F8FAFC] border-t border-[#E2E8F0]">
+        <div className="max-w-lg mx-auto px-4 sm:px-6">
+          <div className="text-center mb-10">
+            <p className="text-xs font-semibold text-[#4F46E5] uppercase tracking-wider mb-2">
+              Pricing
+            </p>
+            <h2 className="text-3xl font-bold text-[#0F172A]">Simple, honest pricing</h2>
+            <p className="text-[#64748B] mt-2">
+              No hidden tiers. Everything below is available today.
+            </p>
+          </div>
+          <div className="bg-white rounded-[20px] border-2 border-[#4F46E5] p-8 shadow-lg">
+            <div className="flex items-baseline gap-2 mb-1">
+              <span className="text-4xl font-bold text-[#0F172A]">Free</span>
+              <span className="text-[#94A3B8] text-sm">while EventFlow is in early access</span>
+            </div>
+            <p className="text-sm text-[#64748B] mb-6">
+              Everything you need to run a real event, at no cost.
+            </p>
+            <ul className="flex flex-col gap-3 mb-8">
+              {[
+                "Unlimited events and registrations",
+                "Custom registration forms",
+                "Automatic confirmation emails",
+                "Google Sheets sync & CSV export",
+                "Registration management dashboard",
+                "WhatsApp, Zoom, Telegram & custom redirects",
+              ].map((f) => (
+                <li key={f} className="flex items-start gap-2.5 text-sm text-[#334155]">
+                  <svg
+                    aria-hidden="true"
+                    className="size-5 text-[#10B981] shrink-0 mt-0.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2.5}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  {f}
+                </li>
+              ))}
+            </ul>
+            <Button fullWidth size="lg" onClick={() => navigate("/signup")}>
+              Start Free
+            </Button>
+          </div>
+          <p className="text-center text-sm text-[#94A3B8] mt-6">
+            Paid plans with advanced features are on the roadmap. No credit card required to get
+            started.
+          </p>
+        </div>
+      </section>
+
       {/* ── Final CTA ────────────────────────────────────────────────── */}
-      <section id="pricing" className="py-20 bg-[#4F46E5]">
+      <section className="py-20 bg-[#4F46E5]">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <h2 className="text-4xl font-bold text-white mb-4">Ready to host smarter events?</h2>
           <p className="text-indigo-200 text-lg mb-8 leading-relaxed">
@@ -413,7 +492,9 @@ function HomePage() {
               Explore Events →
             </Button>
           </div>
-          <p className="text-indigo-300 text-sm mt-5">No credit card required · Free for events up to 100 registrations</p>
+          <p className="text-indigo-300 text-sm mt-5">
+            No credit card required · free to use today
+          </p>
         </div>
       </section>
 
