@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_accounts: {
+        Row: {
+          created_at: string
+          granted_by: string | null
+          tier: Database["public"]["Enums"]["admin_tier"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          granted_by?: string | null
+          tier?: Database["public"]["Enums"]["admin_tier"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          granted_by?: string | null
+          tier?: Database["public"]["Enums"]["admin_tier"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       admin_audit_log: {
         Row: {
           action: string
@@ -41,6 +65,81 @@ export type Database = {
           id?: string
           target_id?: string
           target_type?: string
+        }
+        Relationships: []
+      }
+      admin_permissions: {
+        Row: {
+          area: Database["public"]["Enums"]["admin_area"]
+          created_at: string
+          granted_by: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          area: Database["public"]["Enums"]["admin_area"]
+          created_at?: string
+          granted_by?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          area?: Database["public"]["Enums"]["admin_area"]
+          created_at?: string
+          granted_by?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      app_error_logs: {
+        Row: {
+          fingerprint: string
+          first_seen_at: string
+          id: string
+          last_seen_at: string
+          message: string
+          occurrences: number
+          resolved_at: string | null
+          resolved_by: string | null
+          severity: string
+          source: string
+          stack: string | null
+          url: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          fingerprint: string
+          first_seen_at?: string
+          id?: string
+          last_seen_at?: string
+          message: string
+          occurrences?: number
+          resolved_at?: string | null
+          resolved_by?: string | null
+          severity?: string
+          source?: string
+          stack?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          fingerprint?: string
+          first_seen_at?: string
+          id?: string
+          last_seen_at?: string
+          message?: string
+          occurrences?: number
+          resolved_at?: string | null
+          resolved_by?: string | null
+          severity?: string
+          source?: string
+          stack?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -717,6 +816,57 @@ export type Database = {
           },
         ]
       }
+      site_settings: {
+        Row: {
+          created_at: string
+          favicon_url: string | null
+          footer_text: string | null
+          id: boolean
+          logo_url: string | null
+          maintenance_mode: boolean
+          og_image_url: string | null
+          site_name: string
+          socials: Json
+          support_email: string | null
+          support_phone: string | null
+          tagline: string | null
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          favicon_url?: string | null
+          footer_text?: string | null
+          id?: boolean
+          logo_url?: string | null
+          maintenance_mode?: boolean
+          og_image_url?: string | null
+          site_name?: string
+          socials?: Json
+          support_email?: string | null
+          support_phone?: string | null
+          tagline?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          favicon_url?: string | null
+          footer_text?: string | null
+          id?: boolean
+          logo_url?: string | null
+          maintenance_mode?: boolean
+          og_image_url?: string | null
+          site_name?: string
+          socials?: Json
+          support_email?: string | null
+          support_phone?: string | null
+          tagline?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -743,6 +893,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      has_admin_area: {
+        Args: {
+          _area: Database["public"]["Enums"]["admin_area"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -750,6 +907,8 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_admin_member: { Args: { _user_id: string }; Returns: boolean }
+      is_super_admin: { Args: { _user_id: string }; Returns: boolean }
       is_suspended: { Args: { _user_id: string }; Returns: boolean }
       organizer_follower_count: {
         Args: { _profile_id: string }
@@ -757,6 +916,16 @@ export type Database = {
       }
     }
     Enums: {
+      admin_area:
+        | "overview"
+        | "users"
+        | "events"
+        | "registrations"
+        | "payments"
+        | "errors"
+        | "analytics"
+        | "settings"
+      admin_tier: "super_admin" | "manager"
       app_role: "admin" | "host"
       destination_type:
         | "whatsapp"
@@ -903,6 +1072,17 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      admin_area: [
+        "overview",
+        "users",
+        "events",
+        "registrations",
+        "payments",
+        "errors",
+        "analytics",
+        "settings",
+      ],
+      admin_tier: ["super_admin", "manager"],
       app_role: ["admin", "host"],
       destination_type: [
         "whatsapp",
