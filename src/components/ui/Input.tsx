@@ -1,4 +1,4 @@
-import { type InputHTMLAttributes, type TextareaHTMLAttributes, forwardRef } from "react";
+import { type InputHTMLAttributes, type TextareaHTMLAttributes, forwardRef, useId } from "react";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -10,10 +10,12 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ label, error, hint, leftIcon, rightIcon, className = "", ...props }, ref) => {
+    const autoId = useId();
+    const inputId = props.id ?? autoId;
     return (
       <div className="flex flex-col gap-1.5">
         {label && (
-          <label className="text-sm font-medium text-[#0F172A]">
+          <label htmlFor={inputId} className="text-sm font-medium text-[#0F172A]">
             {label}
             {props.required && <span className="text-[#EF4444] ml-0.5">*</span>}
           </label>
@@ -25,6 +27,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <input
             ref={ref}
             {...props}
+            id={inputId}
             className={[
               "w-full bg-white border rounded-[8px] text-sm text-[#0F172A] placeholder-[#94A3B8]",
               "transition-all duration-150 outline-none",
@@ -58,10 +61,12 @@ interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ label, error, hint, className = "", ...props }, ref) => {
+    const autoId = useId();
+    const textareaId = props.id ?? autoId;
     return (
       <div className="flex flex-col gap-1.5">
         {label && (
-          <label className="text-sm font-medium text-[#0F172A]">
+          <label htmlFor={textareaId} className="text-sm font-medium text-[#0F172A]">
             {label}
             {props.required && <span className="text-[#EF4444] ml-0.5">*</span>}
           </label>
@@ -69,6 +74,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         <textarea
           ref={ref}
           {...props}
+          id={textareaId}
           className={[
             "w-full bg-white border rounded-[8px] text-sm text-[#0F172A] placeholder-[#94A3B8] resize-none",
             "px-3 py-2.5 transition-all duration-150 outline-none",
@@ -88,6 +94,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
 Textarea.displayName = "Textarea";
 
 interface SelectProps {
+  id?: string;
   label?: string;
   error?: string;
   options: { value: string; label: string }[];
@@ -97,16 +104,20 @@ interface SelectProps {
   required?: boolean;
 }
 
-export function Select({ label, error, options, value, onChange, placeholder, required }: SelectProps) {
+export function Select({ id, label, error, options, value, onChange, placeholder, required, "aria-label": ariaLabel }: SelectProps & { "aria-label"?: string }) {
+  const autoId = useId();
+  const selectId = id ?? autoId;
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
-        <label className="text-sm font-medium text-[#0F172A]">
+        <label htmlFor={selectId} className="text-sm font-medium text-[#0F172A]">
           {label}
           {required && <span className="text-[#EF4444] ml-0.5">*</span>}
         </label>
       )}
       <select
+        id={selectId}
+        aria-label={label ? undefined : ariaLabel}
         value={value}
         onChange={(e) => onChange?.(e.target.value)}
         className={[

@@ -71,6 +71,7 @@ function DiscoveryPage() {
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="flex-1">
               <Input
+                aria-label="Search events, organisers or locations"
                 placeholder="Search events, organisers, locations..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
@@ -189,6 +190,7 @@ function DiscoveryPage() {
               <ErrorState message="We couldn't load events right now." onRetry={() => refetch()} />
             ) : filtered.length === 0 ? (
               <EmptyState
+                headingLevel="h2"
                 icon="🔍"
                 title="No events found"
                 description="Try adjusting your search or filters to see more events."
@@ -218,6 +220,22 @@ export const Route = createFileRoute("/discover")({
       { name: "description", content: "Browse webinars, workshops, conferences and community meetups happening on EventFlow." },
       { property: "og:title", content: "Discover events — EventFlow" },
       { property: "og:description", content: "Browse webinars, workshops, conferences and community meetups happening on EventFlow." },
+      { property: "og:url", content: "https://eventflowreg.lovable.app/discover" },
+      { property: "og:type", content: "website" },
+    ],
+    links: [{ rel: "canonical", href: "https://eventflowreg.lovable.app/discover" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: "Discover events — EventFlow",
+          description:
+            "Browse webinars, workshops, conferences and community meetups happening on EventFlow.",
+          url: "https://eventflowreg.lovable.app/discover",
+        }),
+      },
     ],
   }),
   component: DiscoveryPage,
