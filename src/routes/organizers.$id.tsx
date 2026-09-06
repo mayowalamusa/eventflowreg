@@ -297,15 +297,35 @@ function OrganizerProfilePage() {
 }
 
 export const Route = createFileRoute("/organizers/$id")({
-  head: () => ({
-    meta: [
-      { title: "Organizer profile — EventFlow" },
-      { name: "description", content: "See upcoming and past events from this EventFlow organizer." },
-      { property: "og:title", content: "Organizer profile — EventFlow" },
-      { property: "og:description", content: "See upcoming and past events from this EventFlow organizer." },
-      { property: "og:type", content: "profile" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  loader: async ({ params }) => {
+    try {
+      const data = await fetchOrganizer(params.id);
+      return { profile: data?.profile ?? null };
+    } catch {
+      return { profile: null };
+    }
+  },
+  head: ({ params, loaderData }) => {
+    const profile = loaderData?.profile ?? null;
+    const url = `https://eventflowreg.lovable.app/organizers/${params.id}`;
+    const title = profile ? `${profile.display_name} — Events on EventFlow` : "Organizer profile — EventFlow";
+    const description = profile
+      ? (profile.bio?.replace(/\s+/g, " ").trim().slice(0, 155) ||
+        `Discover upcoming and past events hosted by ${profile.display_name} on EventFlow.`)
+      : "See upcoming and past events from this EventFlow organizer.";
+
+    return {
+      meta: [
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
+        { property: "og:type", content: "profile" },
+        { property: "og:url", content: url },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+      links: [{ rel: "canonical", href: url }],
+    };
+  },
   component: OrganizerProfilePage,
 });

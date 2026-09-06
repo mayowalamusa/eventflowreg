@@ -253,13 +253,56 @@ function EventDetailPage() {
 }
 
 export const Route = createFileRoute("/events/$id")({
-  head: () => ({
-    meta: [
-      { title: "Event details — EventFlow" },
-      { name: "description", content: "Full event details, schedule and organizer information on EventFlow." },
-      { property: "og:title", content: "Event details — EventFlow" },
-      { property: "og:description", content: "Full event details, schedule and organizer information on EventFlow." },
-    ],
-  }),
+  loader: async ({ params }) => {
+    try {
+      return { event: await fetchPublicEvent(params.id) };
+    } catch {
+      return { event: null };
+    }
+  },
+  head: ({ params, loaderData }) => {
+    const event = loaderData?.event ?? null;
+    const url = `https://eventflowreg.lovable.app/events/${params.id}`;
+    const title = event ? `${event.title} — EventFlow` : "Event details — EventFlow";
+    const description = event
+      ? (event.description?.replace(/\s+/g, " ").trim().slice(0, 155) ||
+        `Join ${event.title} on ${event.event_date}. Register free on EventFlow.`)
+      : "Full event details, schedule and organizer information on EventFlow.";
+
+    return {
+      meta: [
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
+        { property: "og:type", content: "article" },
+        { property: "og:url", content: url },
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: event
+        ? [
+            {
+              type: "application/ld+json",
+              children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "Event",
+                name: event.title,
+                description,
+                startDate: `${event.event_date}T${(event.event_time || "00:00:00").slice(0, 8)}`,
+                eventAttendanceMode:
+                  event.event_type === "online"
+                    ? "https://schema.org/OnlineEventAttendanceMode"
+                    : "https://schema.org/OfflineEventAttendanceMode",
+                url,
+                location:
+                  event.event_type === "online"
+                    ? { "@type": "VirtualLocation", url }
+                    : { "@type": "Place", name: event.location || "Venue", address: event.location || "" },
+              }),
+            },
+          ]
+        : [],
+    };
+  },
   component: EventDetailPage,
 });
