@@ -139,6 +139,7 @@ function HomePage() {
               <form onSubmit={handleSearch} className="flex gap-2 max-w-lg mb-6">
                 <div className="flex-1">
                   <Input
+                    aria-label="Search events by name, category, or city"
                     placeholder="Search events by name, category, or city..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
@@ -510,6 +511,36 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Create beautiful event registration pages, collect attendees, and sync signups automatically with EventFlow." },
       { property: "og:title", content: "EventFlow — Event registration pages that convert" },
       { property: "og:description", content: "Create beautiful event registration pages, collect attendees, and sync signups automatically with EventFlow." },
+      { property: "og:url", content: "https://eventflowreg.lovable.app/" },
+      { property: "og:type", content: "website" },
+    ],
+    links: [{ rel: "canonical", href: "https://eventflowreg.lovable.app/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              name: "EventFlow",
+              url: "https://eventflowreg.lovable.app/",
+              description:
+                "EventFlow helps hosts, churches, coaches and communities publish event registration pages and collect attendees in minutes.",
+            },
+            {
+              "@type": "WebSite",
+              name: "EventFlow",
+              url: "https://eventflowreg.lovable.app/",
+              potentialAction: {
+                "@type": "SearchAction",
+                target: "https://eventflowreg.lovable.app/discover?q={search_term_string}",
+                "query-input": "required name=search_term_string",
+              },
+            },
+          ],
+        }),
+      },
     ],
   }),
   component: HomePage,
