@@ -23,7 +23,9 @@ import { Route as VerifyEmailRouteImport } from './routes/verify-email'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
+import { Route as AdminErrorsRouteImport } from './routes/admin.errors'
 import { Route as AdminEventsRouteImport } from './routes/admin.events'
+import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as DashboardOrganizerRouteImport } from './routes/dashboard.organizer'
@@ -111,9 +113,19 @@ const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
   path: '/analytics',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminErrorsRoute = AdminErrorsRouteImport.update({
+  id: '/errors',
+  path: '/errors',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminEventsRoute = AdminEventsRouteImport.update({
   id: '/events',
   path: '/events',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminUsersRoute = AdminUsersRouteImport.update({
@@ -206,7 +218,9 @@ export interface FileRoutesByFullPath {
   '/verify-email': typeof VerifyEmailRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/errors': typeof AdminErrorsRoute
   '/admin/events': typeof AdminEventsRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
   '/dashboard/organizer': typeof DashboardOrganizerRoute
   '/dashboard/registrations': typeof DashboardRegistrationsRoute
@@ -236,7 +250,9 @@ export interface FileRoutesByTo {
   '/verify-email': typeof VerifyEmailRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/errors': typeof AdminErrorsRoute
   '/admin/events': typeof AdminEventsRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
   '/dashboard/organizer': typeof DashboardOrganizerRoute
   '/dashboard/registrations': typeof DashboardRegistrationsRoute
@@ -269,7 +285,9 @@ export interface FileRoutesById {
   '/verify-email': typeof VerifyEmailRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/errors': typeof AdminErrorsRoute
   '/admin/events': typeof AdminEventsRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
   '/dashboard/organizer': typeof DashboardOrganizerRoute
   '/dashboard/registrations': typeof DashboardRegistrationsRoute
@@ -303,7 +321,9 @@ export interface FileRouteTypes {
     | '/verify-email'
     | '/.well-known/oauth-protected-resource'
     | '/admin/analytics'
+    | '/admin/errors'
     | '/admin/events'
+    | '/admin/settings'
     | '/admin/users'
     | '/dashboard/organizer'
     | '/dashboard/registrations'
@@ -333,7 +353,9 @@ export interface FileRouteTypes {
     | '/verify-email'
     | '/.well-known/oauth-protected-resource'
     | '/admin/analytics'
+    | '/admin/errors'
     | '/admin/events'
+    | '/admin/settings'
     | '/admin/users'
     | '/dashboard/organizer'
     | '/dashboard/registrations'
@@ -365,7 +387,9 @@ export interface FileRouteTypes {
     | '/verify-email'
     | '/.well-known/oauth-protected-resource'
     | '/admin/analytics'
+    | '/admin/errors'
     | '/admin/events'
+    | '/admin/settings'
     | '/admin/users'
     | '/dashboard/organizer'
     | '/dashboard/registrations'
@@ -502,11 +526,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAnalyticsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/errors': {
+      id: '/admin/errors'
+      path: '/errors'
+      fullPath: '/admin/errors'
+      preLoaderRoute: typeof AdminErrorsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/events': {
       id: '/admin/events'
       path: '/events'
       fullPath: '/admin/events'
       preLoaderRoute: typeof AdminEventsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/users': {
@@ -619,14 +657,18 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminAnalyticsRoute: typeof AdminAnalyticsRoute
+  AdminErrorsRoute: typeof AdminErrorsRoute
   AdminEventsRoute: typeof AdminEventsRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAnalyticsRoute: AdminAnalyticsRoute,
+  AdminErrorsRoute: AdminErrorsRoute,
   AdminEventsRoute: AdminEventsRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
