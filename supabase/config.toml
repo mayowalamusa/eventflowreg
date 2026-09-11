@@ -13,3 +13,9 @@ verify_jwt = false
 # itself instead (a single-use, short-lived, user-scoped `state` token).
 [functions.google-oauth-callback]
 verify_jwt = false
+
+# Invoked on a schedule (see the deployment note at the bottom of the
+# function's source), not by any logged-in user — protected by a
+# CRON_SECRET header check instead of a JWT.
+[functions.purge-deleted-accounts]
+verify_jwt = false

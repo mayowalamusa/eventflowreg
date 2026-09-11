@@ -1,11 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "@/lib/nav";
 import { Input } from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile, useInvalidateProfile } from "@/hooks/useProfile";
 import { profileSchema, saveProfile } from "@/lib/profile";
+import { ACCOUNT_DELETION_GRACE_DAYS, requestAccountDeletion } from "@/lib/accountDeletion";
 
 const tabs = ["Profile", "Security", "Notifications", "Billing"];
 
@@ -23,9 +26,12 @@ function initials(name: string): string {
 
 function AccountSettingsPage() {
   const [tab, setTab] = useState("Profile");
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
   const { profile, isLoading: profileLoading } = useProfile();
   const invalidateProfile = useInvalidateProfile();
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const [fullName, setFullName] = useState("");
   const [fieldError, setFieldError] = useState<string | null>(null);
@@ -63,6 +69,23 @@ function AccountSettingsPage() {
   });
 
   const avatarUrl = profile?.avatar_url;
+
+  const deleteMutation = useMutation({
+    mutationFn: () => requestAccountDeletion(user!.id),
+    onSuccess: async () => {
+      setConfirmDeleteOpen(false);
+      await invalidateProfile();
+      // DashboardLayout will render the pending-deletion gate on the next
+      // render since it also reads the profile — no need to navigate
+      // there manually, but a fresh dashboard load makes that immediate.
+      navigate("/dashboard");
+    },
+    onError: (err: unknown) => {
+      setDeleteError(
+        err instanceof Error ? err.message : "Could not delete your account. Please try again.",
+      );
+    },
+  });
 
   return (
     <div className="p-6 max-w-2xl">
@@ -160,6 +183,20 @@ function AccountSettingsPage() {
             >
               {saveMutation.isPending ? "Saving…" : "Save Changes"}
             </Button>
+
+            {/* Danger Zone */}
+            <div className="mt-4 pt-6 border-t border-[#FEE2E2]">
+              <p className="text-sm font-semibold text-[#B91C1C] mb-1">Danger Zone</p>
+              <p className="text-xs text-[#94A3B8] mb-3">
+                Deleting your account hides your events from the public and stops new registrations
+                immediately. Nothing is permanently removed — you can restore your account any time
+                within {ACCOUNT_DELETION_GRACE_DAYS} days by logging back in.
+              </p>
+              {deleteError && <p className="text-xs text-[#B91C1C] mb-3">{deleteError}</p>}
+              <Button variant="danger" size="sm" onClick={() => setConfirmDeleteOpen(true)}>
+                Delete My Account
+              </Button>
+            </div>
           </div>
         )}
 
@@ -223,6 +260,17 @@ function AccountSettingsPage() {
           </div>
         )}
       </div>
+
+      <ConfirmDialog
+        open={confirmDeleteOpen}
+        title="Delete your account?"
+        description={`Your events will stop being publicly visible and won't accept new registrations. This is fully reversible — log back in and restore your account any time within ${ACCOUNT_DELETION_GRACE_DAYS} days. Nothing is deleted immediately.`}
+        confirmLabel="Delete My Account"
+        destructive
+        loading={deleteMutation.isPending}
+        onCancel={() => setConfirmDeleteOpen(false)}
+        onConfirm={() => deleteMutation.mutate()}
+      />
     </div>
   );
 }

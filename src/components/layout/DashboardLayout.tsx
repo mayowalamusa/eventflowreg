@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate, Outlet } from "@/lib/nav";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
 import { fetchRecentActivity } from "@/lib/recentActivity";
+import { deletionRestoreDeadline, restoreAccount } from "@/lib/accountDeletion";
+import Button from "@/components/ui/Button";
 
 function timeAgo(iso: string): string {
   const mins = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
@@ -85,6 +87,7 @@ export default function DashboardLayout() {
   const navigate = useNavigate();
   const { user, isAdmin, signOut } = useAuth();
   const { profile } = useProfile();
+  const queryClient = useQueryClient();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activityOpen, setActivityOpen] = useState(false);
   const activityRef = useRef<HTMLDivElement>(null);
@@ -124,6 +127,52 @@ export default function DashboardLayout() {
     navigate("/login");
   };
 
+  const restoreMutation = useMutation({
+    mutationFn: () => restoreAccount(user!.id),
+    onSuccess: () => void queryClient.invalidateQueries({ queryKey: ["profile"] }),
+  });
+
+  if (profile?.deletion_requested_at) {
+    const deadline = deletionRestoreDeadline(profile.deletion_requested_at);
+    return (
+      <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-white rounded-[16px] border border-[#E2E8F0] p-8 text-center">
+          <div className="text-4xl mb-4">⏳</div>
+          <h1 className="text-xl font-bold text-[#0F172A] mb-2">
+            Your account is scheduled for deletion
+          </h1>
+          <p className="text-sm text-[#64748B] mb-1">
+            Your events are no longer visible to the public and can't accept new registrations while
+            this is pending.
+          </p>
+          <p className="text-sm text-[#64748B] mb-6">
+            You can restore your account any time before{" "}
+            <span className="font-semibold text-[#0F172A]">
+              {deadline.toLocaleDateString(undefined, {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+              })}
+            </span>
+            .
+          </p>
+          {restoreMutation.isError && (
+            <p className="text-sm text-[#B91C1C] mb-4">
+              Could not restore your account. Please try again.
+            </p>
+          )}
+          <div className="flex flex-col gap-2">
+            <Button onClick={() => restoreMutation.mutate()} loading={restoreMutation.isPending}>
+              Restore My Account
+            </Button>
+            <Button variant="outline" onClick={handleSignOut}>
+              Sign Out
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const isActive = (to: string) => {
     if (to === "/dashboard") return location.pathname === "/dashboard";
