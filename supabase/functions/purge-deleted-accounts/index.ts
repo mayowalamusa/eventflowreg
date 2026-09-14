@@ -4,34 +4,27 @@
 // see the deployment note at the bottom of this file for how to actually
 // wire that up, since it can't be done from application code.
 //
-// DESIGN DECISION — read this before changing it:
+// DESIGN DECISION (confirmed, not assumed):
 // events.host_id and registrations.event_id both cascade through
-// ON DELETE CASCADE chains rooted at auth.users. A true hard-delete of a
-// host's auth.users row would silently destroy every attendee's
-// registration record for that host's events too — not just the host's
-// own data. That's real, third-party data with no say in the host's
-// decision to delete their account.
-//
-// So instead of deleting the account, this ANONYMIZES it once the 90-day
-// restoration window has passed:
-//   - full_name and email are scrubbed on the profile
-//   - avatar removed
-//   - login is disabled (an effectively-permanent ban via the Auth Admin
-//     API), rather than deleting the auth user
-//   - events and registrations are left completely intact, so attendees'
-//     history survives
-//
-// If your product requirements actually call for full erasure (e.g. a
-// specific legal/GDPR obligation that anonymization doesn't satisfy),
-// that's a deliberate product decision to make explicitly — swap the
-// anonymize step below for a real `admin.auth.admin.deleteUser(id)` call,
-// but do it knowingly, with the cascade consequences above in mind.
+// ON DELETE CASCADE chains rooted at auth.users, so hard-deleting a host's
+// auth user destroys their events and every attendee's registration
+// record for those events too. That's fine here specifically because
+// EventFlow attendees have no independent account of their own —
+// registering for an event is an anonymous insert (see
+// registrations_public_insert / submitRegistration()), never linked to an
+// auth.users row for the attendee. There is no attendee identity that
+// outlives the host's account, so there's nothing independent left behind
+// to protect. If EventFlow ever grows attendee-side login accounts, this
+// decision needs revisiting before that ships — at that point deleting a
+// host should almost certainly detach/reassign their registrations rather
+// than cascade-destroy another person's account data.
 
 import { createClient } from "npm:@supabase/supabase-js@2.111.0";
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-cron-secret",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type, x-cron-secret",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
@@ -88,17 +81,10 @@ Deno.serve(async (req: Request) => {
 
   for (const { id } of overdue) {
     try {
-      const { error: profileErr } = await admin
-        .from("profiles")
-        .update({ full_name: "Deleted User", email: null, avatar_url: null })
-        .eq("id", id);
-      if (profileErr) throw profileErr;
-
-      // Effectively-permanent lock rather than deleting the auth user —
-      // preserves events/registrations for attendees' sake (see header).
-      const { error: banErr } = await admin.auth.admin.updateUserById(id, { ban_duration: "876000h" });
-      if (banErr) throw banErr;
-
+      // Hard delete: cascades to events (host_id) and, through those,
+      // registrations (event_id) — intentional, see the header above.
+      const { error: deleteErr } = await admin.auth.admin.deleteUser(id);
+      if (deleteErr) throw deleteErr;
       succeeded++;
     } catch (err) {
       failures.push({ id, error: err instanceof Error ? err.message : "Unknown error" });

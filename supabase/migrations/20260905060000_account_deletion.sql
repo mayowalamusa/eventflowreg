@@ -1,24 +1,20 @@
 -- Self-service account deletion with a 90-day recovery window, and a
 -- defense-in-depth uniqueness constraint on profiles.email.
 --
--- IMPORTANT DESIGN NOTE, read before relying on this in production:
--- events.host_id and registrations.event_id both cascade through
--- ON DELETE CASCADE chains rooted at auth.users. A true hard-delete of a
--- host's auth.users row would therefore silently destroy every attendee's
--- registration record for that host's events too — not just the host's
--- own data. That's a serious, easy-to-miss side effect of "delete my
--- account" for a platform where other people's data (attendees) hangs off
--- a host's account.
+-- DESIGN NOTE (confirmed, not assumed): events.host_id and
+-- registrations.event_id both cascade through ON DELETE CASCADE chains
+-- rooted at auth.users. Because EventFlow attendees have no independent
+-- login account of their own (registering for an event is always an
+-- anonymous insert — see registrations_public_insert), a host's data is
+-- the only account-level identity involved here. Hard-deleting a host
+-- after the 90-day window (see purge-deleted-accounts) intentionally
+-- cascades their events and registrations along with it — there is no
+-- separate attendee identity left behind to protect. If EventFlow ever
+-- adds attendee-side login accounts, this decision needs revisiting.
 --
--- This migration implements the reversible, unambiguous part: a 90-day
--- soft-delete/restore cycle. What happens at the end of the 90 days if
--- never restored is intentionally left as a *choice*, not a default:
---   (a) anonymize — scrub the host's PII, disable login, but keep events/
---       registrations intact (attendees' history survives), or
---   (b) hard-delete — actually remove the auth user, cascading everything.
--- The purge-deleted-accounts Edge Function (see repo) implements (a) by
--- default. Switching to (b) is a real product decision, not a technical
--- detail, and should be made deliberately — see that function's comments.
+-- This migration implements the reversible 90-day part. What happens at
+-- the end of the window if never restored is handled by the
+-- purge-deleted-accounts Edge Function (see repo).
 
 -- 1) Email uniqueness on the profiles mirror. auth.users.email is already
 --    uniquely constrained by Supabase Auth itself — this is defense in
