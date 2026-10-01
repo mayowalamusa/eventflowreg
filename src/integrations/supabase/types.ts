@@ -580,6 +580,7 @@ export type Database = {
         Row: {
           avatar_url: string | null
           created_at: string
+          deletion_requested_at: string | null
           email: string | null
           full_name: string | null
           id: string
@@ -589,6 +590,7 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           created_at?: string
+          deletion_requested_at?: string | null
           email?: string | null
           full_name?: string | null
           id: string
@@ -598,6 +600,7 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           created_at?: string
+          deletion_requested_at?: string | null
           email?: string | null
           full_name?: string | null
           id?: string
@@ -908,6 +911,7 @@ export type Database = {
         Returns: boolean
       }
       is_admin_member: { Args: { _user_id: string }; Returns: boolean }
+      is_pending_deletion: { Args: { _user_id: string }; Returns: boolean }
       is_super_admin: { Args: { _user_id: string }; Returns: boolean }
       is_suspended: { Args: { _user_id: string }; Returns: boolean }
       organizer_follower_count: {
