@@ -34,12 +34,14 @@ export function slugifyHandle(value: string): string {
 export async function resolveLogoUrl(logo: string | null): Promise<string | null> {
   if (!logo) return null;
   if (logo.startsWith("http")) return logo;
-  try {
-    const resolved = await resolveMediaUrls({ bucket: LOGO_BUCKET, paths: [logo] });
-    return resolved[logo] ?? null;
-  } catch {
-    return null;
-  }
+  // Public pages resolve via the app (published profiles only).
+  const resolved = await resolveMediaUrls({ bucket: LOGO_BUCKET, paths: [logo] }).catch(
+    () => ({}) as Record<string, string>,
+  );
+  if (resolved[logo]) return resolved[logo];
+  // Owners can still preview their own logo directly (owner-scoped storage policy).
+  const { data } = await supabase.storage.from(LOGO_BUCKET).createSignedUrl(logo, 60 * 60);
+  return data?.signedUrl ?? null;
 }
 
 export function parseSocials(value: unknown): OrganizerSocials {
