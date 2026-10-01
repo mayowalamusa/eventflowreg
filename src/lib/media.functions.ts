@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 
 export const MEDIA_BUCKETS = ["event-banners", "organizer-logos"] as const;
