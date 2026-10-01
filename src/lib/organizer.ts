@@ -33,8 +33,12 @@ export function slugifyHandle(value: string): string {
 export async function resolveLogoUrl(logo: string | null): Promise<string | null> {
   if (!logo) return null;
   if (logo.startsWith("http")) return logo;
-  const { data } = await supabase.storage.from(LOGO_BUCKET).createSignedUrl(logo, 60 * 60 * 24 * 7);
-  return data?.signedUrl ?? null;
+  try {
+    const resolved = await resolveMediaUrls({ bucket: LOGO_BUCKET, paths: [logo] });
+    return resolved[logo] ?? null;
+  } catch {
+    return null;
+  }
 }
 
 export function parseSocials(value: unknown): OrganizerSocials {
