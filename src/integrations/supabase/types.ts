@@ -911,6 +911,7 @@ export type Database = {
         Returns: boolean
       }
       is_admin_member: { Args: { _user_id: string }; Returns: boolean }
+      is_pending_deletion: { Args: { _user_id: string }; Returns: boolean }
       is_super_admin: { Args: { _user_id: string }; Returns: boolean }
       is_suspended: { Args: { _user_id: string }; Returns: boolean }
       organizer_follower_count: {
