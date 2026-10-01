@@ -11,7 +11,6 @@ const inputSchema = z.object({
 });
 
 function publishableClient() {
-  const { createClient } = require("@supabase/supabase-js") as typeof import("@supabase/supabase-js");
   const url = process.env["SUPABASE_URL"]!;
   const key = process.env["SUPABASE_PUBLISHABLE_KEY"]!;
   return createClient(url, key, {
