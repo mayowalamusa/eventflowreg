@@ -1,5 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import { BANNER_BUCKET, type EventRow } from "@/lib/events";
+import { resolveMediaUrls } from "@/lib/media.functions";
 import type { Database } from "@/integrations/supabase/types";
 
 export type PublicEvent = EventRow & { bannerUrl: string | null };
@@ -20,9 +21,10 @@ export async function resolveBanners(rows: EventRow[]): Promise<PublicEvent[]> {
 
   const signed: Record<string, string> = {};
   if (paths.length) {
-    const { data } = await supabase.storage.from(BANNER_BUCKET).createSignedUrls(paths, 60 * 60);
-    for (const item of data ?? []) {
-      if (item.path && item.signedUrl) signed[item.path] = item.signedUrl;
+    try {
+      Object.assign(signed, await resolveMediaUrls({ bucket: BANNER_BUCKET, paths }));
+    } catch {
+      // Leave empty — banners fall back to the default image.
     }
   }
 
