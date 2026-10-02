@@ -22,7 +22,7 @@ export async function resolveBanners(rows: EventRow[]): Promise<PublicEvent[]> {
   const signed: Record<string, string> = {};
   if (paths.length) {
     try {
-      Object.assign(signed, await resolveMediaUrls({ bucket: BANNER_BUCKET, paths }));
+      Object.assign(signed, await resolveMediaUrls({ data: { bucket: BANNER_BUCKET, paths } }));
     } catch {
       // Leave empty — banners fall back to the default image.
     }
