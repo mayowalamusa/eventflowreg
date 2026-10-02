@@ -67,6 +67,11 @@ async function callGoogleSheets<T>(
 }
 
 export async function startGoogleConnect(): Promise<void> {
+  // Google refuses to render inside iframes (e.g. the editor preview), so
+  // when embedded, open a tab synchronously (keeps the click's user
+  // activation, avoiding popup blockers) and point it at Google later.
+  const embedded = typeof window !== "undefined" && window.self !== window.top;
+  const popup = embedded ? window.open("about:blank", "_blank") : null;
   const { data, error } = await supabase.functions.invoke<{ url?: string; error?: string }>(
     "google-oauth-start",
     { body: {} },
@@ -82,9 +87,12 @@ export async function startGoogleConnect(): Promise<void> {
         /* response wasn't JSON — keep whatever message we already have */
       }
     }
+    popup?.close();
     throw new Error(message);
   }
-  window.location.href = data.url;
+  if (popup) popup.location.href = data.url;
+  else if (embedded) window.open(data.url, "_blank");
+  else window.location.href = data.url;
 }
 
 export function fetchSheetsStatus() {
