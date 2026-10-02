@@ -35,7 +35,7 @@ export async function resolveLogoUrl(logo: string | null): Promise<string | null
   if (!logo) return null;
   if (logo.startsWith("http")) return logo;
   // Public pages resolve via the app (published profiles only).
-  const resolved = await resolveMediaUrls({ bucket: LOGO_BUCKET, paths: [logo] }).catch(
+  const resolved = await resolveMediaUrls({ data: { bucket: LOGO_BUCKET, paths: [logo] } }).catch(
     () => ({}) as Record<string, string>,
   );
   if (resolved[logo]) return resolved[logo];
