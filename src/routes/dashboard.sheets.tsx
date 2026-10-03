@@ -77,9 +77,22 @@ function GoogleSheetsPage() {
       setBanner({ type: "ok", message: "Google account connected." });
       void queryClient.invalidateQueries({ queryKey: ["google-sheets", "status"] });
     } else if (google === "error") {
+      const reason = searchParams.get("message") ?? "";
+      const reasons: Record<string, string> = {
+        access_denied:
+          "Google denied access. If your Google app is in 'Testing' mode, add this Google account as a Test user in Google Cloud Console (OAuth consent screen), or publish the app, then try again.",
+        token_exchange_failed:
+          "Google rejected the sign-in code. Check that the Client ID/Secret match and the redirect URI is listed in Google Cloud Console.",
+        invalid_or_expired_state: "The sign-in link expired. Please click Connect again.",
+        expired_state: "The sign-in took too long. Please click Connect again.",
+        missing_code_or_state: "Google didn't return a sign-in code. Please try again.",
+        not_configured: "Google Sheets isn't configured yet (missing Google credentials).",
+      };
       setBanner({
         type: "error",
-        message: "Couldn't connect your Google account. Please try again.",
+        message:
+          reasons[reason] ??
+          `Couldn't connect your Google account${reason ? ` (${reason})` : ""}. Please try again.`,
       });
     }
     navigate("/dashboard/sheets", { replace: true });
