@@ -222,6 +222,7 @@ Deno.serve(async (req: Request) => {
   }
 
   if (googleError) {
+    console.error("[google-oauth-callback] google returned error", googleError, url.searchParams.get("error_description"));
     return redirectTo(appUrl, { google: "error", message: googleError });
   }
   if (!code || !state) {
