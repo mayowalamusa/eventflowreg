@@ -461,6 +461,93 @@ async function actionSync(admin: SupabaseClient, userId: string) {
   }
 }
 
+// ---------- action: sync-registration (real-time, unauthenticated) ----------
+// Called by the attendee's browser right after registering. Authorization is
+// the registration's unguessable UUID (same model as send-registration-email).
+// Idempotent via synced_to_sheet; never errors back in a way that affects
+// the attendee.
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+async function actionSyncRegistration(admin: SupabaseClient, body: Record<string, unknown>) {
+  const registrationId = typeof body.registrationId === "string" ? body.registrationId : "";
+  if (!UUID_RE.test(registrationId)) return json({ status: "skipped", reason: "invalid_id" });
+
+  const { data: reg } = await admin
+    .from("registrations")
+    .select("id, full_name, email, phone, ticket_code, status, created_at, amount_paid_cents, synced_to_sheet, events(title, host_id)")
+    .eq("id", registrationId)
+    .maybeSingle();
+  if (!reg) return json({ status: "skipped", reason: "not_found" });
+  if (reg.synced_to_sheet) return json({ status: "already_synced" });
+
+  const hostId = (reg.events as { host_id?: string } | null)?.host_id;
+  if (!hostId) return json({ status: "skipped", reason: "no_host" });
+
+  const connection = await loadConnection(admin, hostId);
+  if (!connection || !connection.is_active || !connection.spreadsheet_id) {
+    return json({ status: "skipped", reason: "not_connected" });
+  }
+
+  // Claim the row first so concurrent calls can't double-append.
+  const { data: claimed } = await admin
+    .from("registrations")
+    .update({ synced_to_sheet: true })
+    .eq("id", registrationId)
+    .eq("synced_to_sheet", false)
+    .select("id");
+  if (!claimed || claimed.length === 0) return json({ status: "already_synced" });
+
+  const { data: run } = await admin
+    .from("sheet_sync_runs")
+    .insert({ user_id: hostId, connection_id: connection.id, status: "running", details: { trigger: "realtime" } })
+    .select("id")
+    .single();
+
+  const fail = async (message: string) => {
+    await admin.from("registrations").update({ synced_to_sheet: false }).eq("id", registrationId);
+    await admin.from("google_connections").update({ last_sync_error: message }).eq("id", connection.id);
+    if (run?.id) {
+      await admin.from("sheet_sync_runs").update({
+        finished_at: new Date().toISOString(), status: "failed", processed_count: 1, failed_count: 1, error: message,
+      }).eq("id", run.id);
+    }
+    return json({ status: "failed" });
+  };
+
+  try {
+    const token = await getValidAccessToken(admin, connection);
+    const mapping = Object.keys(connection.field_mapping ?? {}).length ? connection.field_mapping : DEFAULT_FIELD_MAPPING;
+    const cols = activeColumns(mapping);
+    const r = reg as Record<string, unknown>;
+    const value = (key: string): string => {
+      switch (key) {
+        case "event_title": return String((r.events as { title?: string } | null)?.title ?? "");
+        case "created_at": return r.created_at ? new Date(r.created_at as string).toISOString() : "";
+        case "amount_paid_cents": return String(r.amount_paid_cents ?? 0);
+        default: return String(r[key] ?? "");
+      }
+    };
+    const range = a1Range(connection.worksheet_name, cols.length);
+    const res = await fetch(
+      `${SHEETS_API}/${connection.spreadsheet_id}/values/${encodeURIComponent(range)}:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`,
+      { method: "POST", headers: sheetsHeaders(token), body: JSON.stringify({ values: [cols.map((c) => value(c.key))] }) },
+    );
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      return await fail(`Real-time sync failed (${res.status}): ${text.slice(0, 200)}`);
+    }
+    await admin.from("google_connections").update({ last_synced_at: new Date().toISOString(), last_sync_error: null }).eq("id", connection.id);
+    if (run?.id) {
+      await admin.from("sheet_sync_runs").update({
+        finished_at: new Date().toISOString(), status: "success", processed_count: 1, added_count: 1,
+      }).eq("id", run.id);
+    }
+    return json({ status: "success" });
+  } catch (err) {
+    return await fail(err instanceof Error ? err.message : "Real-time sync failed");
+  }
+}
+
 // ---------- action: disconnect ----------
 async function actionDisconnect(admin: SupabaseClient, userId: string) {
   const connection = await loadConnection(admin, userId);
@@ -495,9 +582,12 @@ Deno.serve(async (req: Request) => {
   const admin = adminClient();
 
   try {
-    const user = await requireUser(req, admin);
     const body = (await req.json().catch(() => ({}))) as Record<string, unknown>;
     const action = typeof body.action === "string" ? body.action : "";
+    // Only public action: attendee-triggered real-time append. Everything
+    // else below still requires the host's session.
+    if (action === "sync-registration") return await actionSyncRegistration(admin, body);
+    const user = await requireUser(req, admin);
 
     switch (action) {
       case "status":

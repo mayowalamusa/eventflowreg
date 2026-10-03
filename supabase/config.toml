@@ -19,3 +19,9 @@ verify_jwt = false
 # CRON_SECRET header check instead of a JWT.
 [functions.purge-deleted-accounts]
 verify_jwt = false
+
+# Anonymous attendees trigger the real-time `sync-registration` action
+# (authorized by the registration UUID). Every other action still checks
+# the host's session inside the function via requireUser().
+[functions.google-sheets]
+verify_jwt = false
