@@ -285,6 +285,12 @@ function GoogleSheetsPage() {
           )}
 
           {isConnected && hasSpreadsheet && (
+            <p className="text-sm text-[#166534] bg-[#F0FDF4] border border-[#BBF7D0] rounded-[10px] px-3 py-2 mb-3">
+              ⚡ Real-time auto-sync is on — new registrations are added to your sheet within seconds.
+              Use Sync Now to catch up on older ones.
+            </p>
+          )}
+          {isConnected && hasSpreadsheet && (
             <div className="flex flex-wrap items-center gap-3">
               <Button onClick={() => syncMutation.mutate()} loading={syncMutation.isPending}>
                 {syncMutation.isPending ? "Syncing…" : "Sync Now"}
