@@ -73,6 +73,11 @@ function RegistrationSuccessPage() {
   useEffect(() => {
     if (regRowId && attemptedFor.current !== regRowId) {
       void sendConfirmationEmail();
+      // Real-time push to the host's Google Sheet. Idempotent and silent —
+      // a sync problem must never affect the attendee.
+      void supabase.functions
+        .invoke("google-sheets", { body: { action: "sync-registration", registrationId: regRowId } })
+        .catch(() => undefined);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [regRowId]);
