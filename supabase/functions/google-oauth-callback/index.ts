@@ -49,7 +49,7 @@ export function env(name: string): string | null {
 }
 
 export function requireEnv(name: string): string {
-  const v = Deno.env.get(name);
+  const v = (Deno.env.get(name) ?? "").trim().replace(/^["']+|["']+$/g, "").trim();
   if (!v) throw new Error(`Missing required environment variable: ${name}`);
   return v;
 }
@@ -282,7 +282,9 @@ Deno.serve(async (req: Request) => {
   const tokenPayload = await tokenRes.json().catch(() => ({}));
   if (!tokenRes.ok) {
     console.error("[google-oauth-callback] token exchange failed", tokenPayload);
-    return redirectTo(appUrl, { google: "error", message: "token_exchange_failed" });
+    return redirectTo(appUrl, { google: "error", message: "token_exchange_failed",
+      detail: [tokenPayload.error, tokenPayload.error_description].filter(Boolean).join(": ").slice(0, 300),
+    });
   }
 
   const accessToken = tokenPayload.access_token as string;
