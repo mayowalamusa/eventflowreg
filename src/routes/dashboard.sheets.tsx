@@ -91,8 +91,9 @@ function GoogleSheetsPage() {
       setBanner({
         type: "error",
         message:
-          reasons[reason] ??
-          `Couldn't connect your Google account${reason ? ` (${reason})` : ""}. Please try again.`,
+          (reasons[reason] ??
+            `Couldn't connect your Google account${reason ? ` (${reason})` : ""}. Please try again.`) +
+          (searchParams.get("detail") ? ` Google said: "${searchParams.get("detail")}"` : ""),
       });
     }
     navigate("/dashboard/sheets", { replace: true });

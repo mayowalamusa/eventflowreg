@@ -49,7 +49,7 @@ export function env(name: string): string | null {
 }
 
 export function requireEnv(name: string): string {
-  const v = Deno.env.get(name);
+  const v = (Deno.env.get(name) ?? "").trim().replace(/^["']+|["']+$/g, "").trim();
   if (!v) throw new Error(`Missing required environment variable: ${name}`);
   return v;
 }
